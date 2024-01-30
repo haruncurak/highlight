@@ -60,21 +60,28 @@ function isElement(n2) {
 }
 function isShadowRoot(n2) {
   var host = n2 === null || n2 === void 0 ? void 0 : n2.host;
-  return Boolean((host === null || host === void 0 ? void 0 : host.shadowRoot) === n2);
+  return Boolean(
+    (host === null || host === void 0 ? void 0 : host.shadowRoot) === n2
+  );
 }
 function isNativeShadowDom(shadowRoot) {
   return Object.prototype.toString.call(shadowRoot) === "[object ShadowRoot]";
 }
 function fixBrowserCompatibilityIssuesInCSS(cssText) {
   if (cssText.includes(" background-clip: text;") && !cssText.includes(" -webkit-background-clip: text;")) {
-    cssText = cssText.replace(" background-clip: text;", " -webkit-background-clip: text; background-clip: text;");
+    cssText = cssText.replace(
+      " background-clip: text;",
+      " -webkit-background-clip: text; background-clip: text;"
+    );
   }
   return cssText;
 }
 function getCssRulesString(s2) {
   try {
     var rules2 = s2.rules || s2.cssRules;
-    return rules2 ? fixBrowserCompatibilityIssuesInCSS(Array.from(rules2).map(getCssRuleString).join("")) : null;
+    return rules2 ? fixBrowserCompatibilityIssuesInCSS(
+      Array.from(rules2).map(getCssRuleString).join("")
+    ) : null;
   } catch (error) {
     return null;
   }
@@ -162,7 +169,15 @@ function is2DCanvasBlank(canvas) {
     for (var y = 0; y < canvas.height; y += chunkSize) {
       var getImageData = ctx.getImageData;
       var originalGetImageData = ORIGINAL_ATTRIBUTE_NAME in getImageData ? getImageData[ORIGINAL_ATTRIBUTE_NAME] : getImageData;
-      var pixelBuffer = new Uint32Array(originalGetImageData.call(ctx, x, y, Math.min(chunkSize, canvas.width - x), Math.min(chunkSize, canvas.height - y)).data.buffer);
+      var pixelBuffer = new Uint32Array(
+        originalGetImageData.call(
+          ctx,
+          x,
+          y,
+          Math.min(chunkSize, canvas.width - x),
+          Math.min(chunkSize, canvas.height - y)
+        ).data.buffer
+      );
       if (pixelBuffer.some(function(pixel) {
         return pixel !== 0;
       }))
@@ -198,12 +213,18 @@ function obfuscateText(text) {
 function isElementSrcBlocked(tagName) {
   return tagName === "img" || tagName === "video" || tagName === "audio" || tagName === "source";
 }
-var EMAIL_REGEX = new RegExp("[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*");
+var EMAIL_REGEX = new RegExp(
+  "[a-zA-Z0-9.!#$%&'*+=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:.[a-zA-Z0-9-]+)*"
+);
 var LONG_NUMBER_REGEX = new RegExp("[0-9]{9,16}");
 var SSN_REGEX = new RegExp("[0-9]{3}-?[0-9]{2}-?[0-9]{4}");
-var PHONE_NUMBER_REGEX = new RegExp("[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}");
+var PHONE_NUMBER_REGEX = new RegExp(
+  "[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}"
+);
 var CREDIT_CARD_REGEX = new RegExp("[0-9]{4}-?[0-9]{4}-?[0-9]{4}-?[0-9]{4}");
-var ADDRESS_REGEX = new RegExp("[0-9]{1,5}.?[0-9]{0,3}s[a-zA-Z]{2,30}s[a-zA-Z]{2,15}");
+var ADDRESS_REGEX = new RegExp(
+  "[0-9]{1,5}.?[0-9]{0,3}s[a-zA-Z]{2,30}s[a-zA-Z]{2,15}"
+);
 var IP_REGEX = new RegExp("(?:[0-9]{1,3}.){3}[0-9]{1,3}");
 var DEFAULT_OBFUSCATE_REGEXES = [
   EMAIL_REGEX,
@@ -281,36 +302,39 @@ var URL_PROTOCOL_MATCH = /^(?:[a-z+]+:)?\/\//i;
 var URL_WWW_MATCH = /^www\..*/i;
 var DATA_URI = /^(data:)([^,]*),(.*)/i;
 function absoluteToStylesheet(cssText, href) {
-  return (cssText || "").replace(URL_IN_CSS_REF, function(origin, quote1, path1, quote2, path2, path3) {
-    var filePath = path1 || path2 || path3;
-    var maybeQuote = quote1 || quote2 || "";
-    if (!filePath) {
-      return origin;
-    }
-    if (URL_PROTOCOL_MATCH.test(filePath) || URL_WWW_MATCH.test(filePath)) {
-      return "url(".concat(maybeQuote).concat(filePath).concat(maybeQuote, ")");
-    }
-    if (DATA_URI.test(filePath)) {
-      return "url(".concat(maybeQuote).concat(filePath).concat(maybeQuote, ")");
-    }
-    if (filePath[0] === "/") {
-      return "url(".concat(maybeQuote).concat(extractOrigin(href) + filePath).concat(maybeQuote, ")");
-    }
-    var stack = href.split("/");
-    var parts = filePath.split("/");
-    stack.pop();
-    for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
-      var part = parts_1[_i];
-      if (part === ".") {
-        continue;
-      } else if (part === "..") {
-        stack.pop();
-      } else {
-        stack.push(part);
+  return (cssText || "").replace(
+    URL_IN_CSS_REF,
+    function(origin, quote1, path1, quote2, path2, path3) {
+      var filePath = path1 || path2 || path3;
+      var maybeQuote = quote1 || quote2 || "";
+      if (!filePath) {
+        return origin;
       }
+      if (URL_PROTOCOL_MATCH.test(filePath) || URL_WWW_MATCH.test(filePath)) {
+        return "url(".concat(maybeQuote).concat(filePath).concat(maybeQuote, ")");
+      }
+      if (DATA_URI.test(filePath)) {
+        return "url(".concat(maybeQuote).concat(filePath).concat(maybeQuote, ")");
+      }
+      if (filePath[0] === "/") {
+        return "url(".concat(maybeQuote).concat(extractOrigin(href) + filePath).concat(maybeQuote, ")");
+      }
+      var stack = href.split("/");
+      var parts = filePath.split("/");
+      stack.pop();
+      for (var _i = 0, parts_1 = parts; _i < parts_1.length; _i++) {
+        var part = parts_1[_i];
+        if (part === ".") {
+          continue;
+        } else if (part === "..") {
+          stack.pop();
+        } else {
+          stack.push(part);
+        }
+      }
+      return "url(".concat(maybeQuote).concat(stack.join("/")).concat(maybeQuote, ")");
     }
-    return "url(".concat(maybeQuote).concat(stack.join("/")).concat(maybeQuote, ")");
-  });
+  );
 }
 var SRCSET_NOT_SPACES = /^[^ \t\n\r\u000c]+/;
 var SRCSET_COMMAS_OR_SPACES = /^[, \t\n\r\u000c]+/;
@@ -611,7 +635,10 @@ function serializeTextNode(n2, options) {
         textContent = stringifyStyleSheet(n2.parentNode.sheet);
       }
     } catch (err) {
-      console.warn("Cannot get CSS styles from text's parentNode. Error: ".concat(err), n2);
+      console.warn(
+        "Cannot get CSS styles from text's parentNode. Error: ".concat(err),
+        n2
+      );
     }
     textContent = absoluteToStylesheet(textContent, getHref());
     textContentHandled = true;
@@ -661,7 +688,12 @@ function serializeElementNode(n2, options) {
   for (var i2 = 0; i2 < len; i2++) {
     var attr = n2.attributes[i2];
     if (!ignoreAttribute(tagName, attr.name, attr.value)) {
-      attributes[attr.name] = transformAttribute(doc, tagName, attr.name, attr.value);
+      attributes[attr.name] = transformAttribute(
+        doc,
+        tagName,
+        attr.name,
+        attr.value
+      );
     }
   }
   if (tagName === "link" && inlineStylesheet) {
@@ -711,14 +743,23 @@ function serializeElementNode(n2, options) {
   if (tagName === "canvas" && recordCanvas) {
     if (n2.__context === "2d") {
       if (!is2DCanvasBlank(n2)) {
-        attributes.rr_dataURL = n2.toDataURL(dataURLOptions.type, dataURLOptions.quality);
+        attributes.rr_dataURL = n2.toDataURL(
+          dataURLOptions.type,
+          dataURLOptions.quality
+        );
       }
     } else if (!("__context" in n2)) {
-      var canvasDataURL = n2.toDataURL(dataURLOptions.type, dataURLOptions.quality);
+      var canvasDataURL = n2.toDataURL(
+        dataURLOptions.type,
+        dataURLOptions.quality
+      );
       var blankCanvas = document.createElement("canvas");
       blankCanvas.width = n2.width;
       blankCanvas.height = n2.height;
-      var blankCanvasDataURL = blankCanvas.toDataURL(dataURLOptions.type, dataURLOptions.quality);
+      var blankCanvasDataURL = blankCanvas.toDataURL(
+        dataURLOptions.type,
+        dataURLOptions.quality
+      );
       if (canvasDataURL !== blankCanvasDataURL) {
         attributes.rr_dataURL = canvasDataURL;
       }
@@ -738,9 +779,14 @@ function serializeElementNode(n2, options) {
         canvasService.width = image_1.naturalWidth;
         canvasService.height = image_1.naturalHeight;
         canvasCtx.drawImage(image_1, 0, 0);
-        attributes.rr_dataURL = canvasService.toDataURL(dataURLOptions.type, dataURLOptions.quality);
+        attributes.rr_dataURL = canvasService.toDataURL(
+          dataURLOptions.type,
+          dataURLOptions.quality
+        );
       } catch (err) {
-        console.warn("Cannot inline img src=".concat(image_1.currentSrc, "! Error: ").concat(err));
+        console.warn(
+          "Cannot inline img src=".concat(image_1.currentSrc, "! Error: ").concat(err)
+        );
       }
       oldValue_1 ? attributes.crossOrigin = oldValue_1 : image_1.removeAttribute("crossorigin");
     };
@@ -764,7 +810,7 @@ function serializeElementNode(n2, options) {
   if (needBlock || needMask || enableStrictPrivacy && isElementSrcBlocked(tagName)) {
     var _d = n2.getBoundingClientRect(), width = _d.width, height = _d.height;
     attributes = {
-      "class": attributes["class"],
+      class: attributes["class"],
       rr_width: "".concat(width, "px"),
       rr_height: "".concat(height, "px")
     };
@@ -814,7 +860,9 @@ function slimDOMExcluded(sn, slimDOMOptions) {
   } else if (sn.type === NodeType.Element) {
     if (slimDOMOptions.script && (sn.tagName === "script" || sn.tagName === "link" && (sn.attributes.rel === "preload" || sn.attributes.rel === "modulepreload") && sn.attributes.as === "script" || sn.tagName === "link" && sn.attributes.rel === "prefetch" && typeof sn.attributes.href === "string" && sn.attributes.href.endsWith(".js"))) {
       return true;
-    } else if (slimDOMOptions.headFavicon && (sn.tagName === "link" && sn.attributes.rel === "shortcut icon" || sn.tagName === "meta" && (lowerIfExists(sn.attributes.name).match(/^msapplication-tile(image|color)$/) || lowerIfExists(sn.attributes.name) === "application-name" || lowerIfExists(sn.attributes.rel) === "icon" || lowerIfExists(sn.attributes.rel) === "apple-touch-icon" || lowerIfExists(sn.attributes.rel) === "shortcut icon"))) {
+    } else if (slimDOMOptions.headFavicon && (sn.tagName === "link" && sn.attributes.rel === "shortcut icon" || sn.tagName === "meta" && (lowerIfExists(sn.attributes.name).match(
+      /^msapplication-tile(image|color)$/
+    ) || lowerIfExists(sn.attributes.name) === "application-name" || lowerIfExists(sn.attributes.rel) === "icon" || lowerIfExists(sn.attributes.rel) === "apple-touch-icon" || lowerIfExists(sn.attributes.rel) === "shortcut icon"))) {
       return true;
     } else if (sn.tagName === "meta") {
       if (slimDOMOptions.headMetaDescKeywords && lowerIfExists(sn.attributes.name).match(/^description|keywords$/)) {
@@ -946,73 +994,81 @@ function serializeNodeWithId(n2, options) {
     serializedNode.isShadow = true;
   }
   if (serializedNode.type === NodeType.Element && serializedNode.tagName === "iframe") {
-    onceIframeLoaded(n2, function() {
-      var iframeDoc = n2.contentDocument;
-      if (iframeDoc && onIframeLoad) {
-        var serializedIframeNode = serializeNodeWithId(iframeDoc, {
-          doc: iframeDoc,
-          mirror: mirror2,
-          blockClass,
-          blockSelector,
-          maskTextClass,
-          maskTextSelector,
-          skipChild: false,
-          inlineStylesheet,
-          maskInputOptions,
-          maskTextFn,
-          maskInputFn,
-          slimDOMOptions,
-          dataURLOptions,
-          inlineImages,
-          recordCanvas,
-          preserveWhiteSpace,
-          onSerialize,
-          onIframeLoad,
-          iframeLoadTimeout,
-          onStylesheetLoad,
-          stylesheetLoadTimeout,
-          keepIframeSrcFn,
-          privacySetting
-        });
-        if (serializedIframeNode) {
-          onIframeLoad(n2, serializedIframeNode);
+    onceIframeLoaded(
+      n2,
+      function() {
+        var iframeDoc = n2.contentDocument;
+        if (iframeDoc && onIframeLoad) {
+          var serializedIframeNode = serializeNodeWithId(iframeDoc, {
+            doc: iframeDoc,
+            mirror: mirror2,
+            blockClass,
+            blockSelector,
+            maskTextClass,
+            maskTextSelector,
+            skipChild: false,
+            inlineStylesheet,
+            maskInputOptions,
+            maskTextFn,
+            maskInputFn,
+            slimDOMOptions,
+            dataURLOptions,
+            inlineImages,
+            recordCanvas,
+            preserveWhiteSpace,
+            onSerialize,
+            onIframeLoad,
+            iframeLoadTimeout,
+            onStylesheetLoad,
+            stylesheetLoadTimeout,
+            keepIframeSrcFn,
+            privacySetting
+          });
+          if (serializedIframeNode) {
+            onIframeLoad(n2, serializedIframeNode);
+          }
         }
-      }
-    }, iframeLoadTimeout);
+      },
+      iframeLoadTimeout
+    );
   }
   if (serializedNode.type === NodeType.Element && serializedNode.tagName === "link" && serializedNode.attributes.rel === "stylesheet") {
-    onceStylesheetLoaded(n2, function() {
-      if (onStylesheetLoad) {
-        var serializedLinkNode = serializeNodeWithId(n2, {
-          doc,
-          mirror: mirror2,
-          blockClass,
-          blockSelector,
-          maskTextClass,
-          maskTextSelector,
-          skipChild: false,
-          inlineStylesheet,
-          maskInputOptions,
-          maskTextFn,
-          maskInputFn,
-          slimDOMOptions,
-          dataURLOptions,
-          inlineImages,
-          recordCanvas,
-          preserveWhiteSpace,
-          onSerialize,
-          onIframeLoad,
-          iframeLoadTimeout,
-          onStylesheetLoad,
-          stylesheetLoadTimeout,
-          keepIframeSrcFn,
-          privacySetting
-        });
-        if (serializedLinkNode) {
-          onStylesheetLoad(n2, serializedLinkNode);
+    onceStylesheetLoaded(
+      n2,
+      function() {
+        if (onStylesheetLoad) {
+          var serializedLinkNode = serializeNodeWithId(n2, {
+            doc,
+            mirror: mirror2,
+            blockClass,
+            blockSelector,
+            maskTextClass,
+            maskTextSelector,
+            skipChild: false,
+            inlineStylesheet,
+            maskInputOptions,
+            maskTextFn,
+            maskInputFn,
+            slimDOMOptions,
+            dataURLOptions,
+            inlineImages,
+            recordCanvas,
+            preserveWhiteSpace,
+            onSerialize,
+            onIframeLoad,
+            iframeLoadTimeout,
+            onStylesheetLoad,
+            stylesheetLoadTimeout,
+            keepIframeSrcFn,
+            privacySetting
+          });
+          if (serializedLinkNode) {
+            onStylesheetLoad(n2, serializedLinkNode);
+          }
         }
-      }
-    }, stylesheetLoadTimeout);
+      },
+      stylesheetLoadTimeout
+    );
   }
   return serializedNode;
 }
@@ -1113,7 +1169,9 @@ function parse(css, options) {
   Position.prototype.content = css;
   var errorsList = [];
   function error(msg) {
-    var err = new Error("".concat(options.source || "", ":").concat(lineno, ":").concat(column, ": ").concat(msg));
+    var err = new Error(
+      "".concat(options.source || "", ":").concat(lineno, ":").concat(column, ": ").concat(msg)
+    );
     err.reason = msg;
     err.filename = options.source;
     err.line = lineno;
@@ -1583,13 +1641,16 @@ function addHoverClass(cssText, cache) {
   if (selectors.length === 0) {
     return cssText;
   }
-  var selectorMatcher = new RegExp(selectors.filter(function(selector, index) {
-    return selectors.indexOf(selector) === index;
-  }).sort(function(a2, b) {
-    return b.length - a2.length;
-  }).map(function(selector) {
-    return escapeRegExp(selector);
-  }).join("|"), "g");
+  var selectorMatcher = new RegExp(
+    selectors.filter(function(selector, index) {
+      return selectors.indexOf(selector) === index;
+    }).sort(function(a2, b) {
+      return b.length - a2.length;
+    }).map(function(selector) {
+      return escapeRegExp(selector);
+    }).join("|"),
+    "g"
+  );
   var result = cssText.replace(selectorMatcher, function(selector) {
     var newSelector = selector.replace(HOVER_SELECTOR_GLOBAL, "$1.\\:hover");
     return "".concat(selector, ", ").concat(newSelector);
@@ -1609,7 +1670,11 @@ function buildNode(n2, options) {
     case NodeType.Document:
       return doc.implementation.createDocument(null, "", null);
     case NodeType.DocumentType:
-      return doc.implementation.createDocumentType(n2.name || "html", n2.publicId, n2.systemId);
+      return doc.implementation.createDocumentType(
+        n2.name || "html",
+        n2.publicId,
+        n2.systemId
+      );
     case NodeType.Element: {
       var tagName = getTagName(n2);
       var node_1;
@@ -1654,7 +1719,10 @@ function buildNode(n2, options) {
                   var url = match.slice(5, match.length - 2);
                   fontUrls_1.push({
                     originalUrl: url,
-                    proxyUrl: url.replace(url, "".concat(PROXY_URL_1, "?url=").concat(url))
+                    proxyUrl: url.replace(
+                      url,
+                      "".concat(PROXY_URL_1, "?url=").concat(url)
+                    )
                   });
                 }
               });
@@ -1677,7 +1745,11 @@ function buildNode(n2, options) {
         }
         try {
           if (n2.isSVG && name_12 === "xlink:href") {
-            node_1.setAttributeNS("http://www.w3.org/1999/xlink", name_12, value.toString());
+            node_1.setAttributeNS(
+              "http://www.w3.org/1999/xlink",
+              name_12,
+              value.toString()
+            );
           } else if (name_12 === "onload" || name_12 === "onclick" || name_12.substring(0, 7) === "onmouse") {
             node_1.setAttribute("_" + name_12, value.toString());
           } else if (tagName === "meta" && n2.attributes["http-equiv"] === "Content-Security-Policy" && name_12 === "content") {
@@ -1750,7 +1822,9 @@ function buildNode(n2, options) {
       return node_1;
     }
     case NodeType.Text:
-      return doc.createTextNode(n2.isStyle && hackCss ? addHoverClass(n2.textContent, cache) : n2.textContent);
+      return doc.createTextNode(
+        n2.isStyle && hackCss ? addHoverClass(n2.textContent, cache) : n2.textContent
+      );
     case NodeType.CDATA:
       return doc.createCDATASection(n2.textContent);
     case NodeType.Comment:
@@ -1779,9 +1853,13 @@ function buildNodeWithSN(n2, options) {
     doc.open();
     if (n2.compatMode === "BackCompat" && n2.childNodes && n2.childNodes[0].type !== NodeType.DocumentType) {
       if (n2.childNodes[0].type === NodeType.Element && "xmlns" in n2.childNodes[0].attributes && n2.childNodes[0].attributes.xmlns === "http://www.w3.org/1999/xhtml") {
-        doc.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "">');
+        doc.write(
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "">'
+        );
       } else {
-        doc.write('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "">');
+        doc.write(
+          '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "">'
+        );
       }
     }
     node = doc;
@@ -1978,16 +2056,20 @@ function throttle(func, wait, options = {}) {
 }
 function hookSetter(target, key, d, isRevoked, win = window) {
   const original = win.Object.getOwnPropertyDescriptor(target, key);
-  win.Object.defineProperty(target, key, isRevoked ? d : {
-    set(value) {
-      setTimeout(() => {
-        d.set.call(this, value);
-      }, 0);
-      if (original && original.set) {
-        original.set.call(this, value);
+  win.Object.defineProperty(
+    target,
+    key,
+    isRevoked ? d : {
+      set(value) {
+        setTimeout(() => {
+          d.set.call(this, value);
+        }, 0);
+        if (original && original.set) {
+          original.set.call(this, value);
+        }
       }
     }
-  });
+  );
   return () => hookSetter(target, key, original || {}, true);
 }
 function patch(source, name, replacement) {
@@ -2132,7 +2214,11 @@ function queueToResolveTrees(queue) {
       const nextInTree = queueNodeMap[nextId];
       if (nextInTree.parent) {
         const idx = nextInTree.parent.children.indexOf(nextInTree);
-        nextInTree.parent.children.splice(idx, 0, putIntoMap(mutation, nextInTree.parent));
+        nextInTree.parent.children.splice(
+          idx,
+          0,
+          putIntoMap(mutation, nextInTree.parent)
+        );
       } else {
         const idx = queueNodeTrees.indexOf(nextInTree);
         queueNodeTrees.splice(idx, 0, putIntoMap(mutation, null));
@@ -2158,7 +2244,9 @@ function isSerializedIframe(n2, mirror2) {
   return Boolean(n2.nodeName === "IFRAME" && mirror2.getMeta(n2));
 }
 function isSerializedStylesheet(n2, mirror2) {
-  return Boolean(n2.nodeName === "LINK" && n2.nodeType === n2.ELEMENT_NODE && n2.getAttribute && n2.getAttribute("rel") === "stylesheet" && mirror2.getMeta(n2));
+  return Boolean(
+    n2.nodeName === "LINK" && n2.nodeType === n2.ELEMENT_NODE && n2.getAttribute && n2.getAttribute("rel") === "stylesheet" && mirror2.getMeta(n2)
+  );
 }
 function getBaseDimension(node, rootIframe) {
   var _a2, _b2;
@@ -2189,7 +2277,10 @@ function getNestedRule(rules2, position) {
   if (position.length === 1) {
     return rule;
   } else {
-    return getNestedRule(rule.cssRules[position[1]].cssRules, position.slice(2));
+    return getNestedRule(
+      rule.cssRules[position[1]].cssRules,
+      position.slice(2)
+    );
   }
 }
 function getPositionsAndIndex(nestedIndex) {
@@ -2610,7 +2701,11 @@ var MutationBuffer = class {
           const value = m.target.textContent;
           if (!isBlocked(m.target, this.blockClass, this.blockSelector, false) && value !== m.oldValue) {
             this.texts.push({
-              value: needMaskingText(m.target, this.maskTextClass, this.maskTextSelector) && value ? this.maskTextFn ? this.maskTextFn(value) : value.replace(/[\S]/g, "*") : value,
+              value: needMaskingText(
+                m.target,
+                this.maskTextClass,
+                this.maskTextSelector
+              ) && value ? this.maskTextFn ? this.maskTextFn(value) : value.replace(/[\S]/g, "*") : value,
               node: m.target
             });
           }
@@ -2686,7 +2781,12 @@ var MutationBuffer = class {
                 break;
               }
             }
-            item.attributes[attributeName] = transformAttribute(this.doc, target.tagName, attributeName, value);
+            item.attributes[attributeName] = transformAttribute(
+              this.doc,
+              target.tagName,
+              attributeName,
+              value
+            );
           }
           break;
         }
@@ -2894,7 +2994,9 @@ function initMutationObserver(options, rootEl) {
   if (angularZoneSymbol && window[angularZoneSymbol]) {
     mutationObserverCtor = window[angularZoneSymbol];
   }
-  const observer = new mutationObserverCtor(callbackWrapper(mutationBuffer.processMutations.bind(mutationBuffer)));
+  const observer = new mutationObserverCtor(
+    callbackWrapper(mutationBuffer.processMutations.bind(mutationBuffer))
+  );
   observer.observe(rootEl, {
     attributes: true,
     attributeOldValue: true,
@@ -2914,31 +3016,45 @@ function initMoveObserver({ mousemoveCb, sampling, doc, mirror: mirror2 }) {
   const callbackThreshold = typeof sampling.mousemoveCallback === "number" ? sampling.mousemoveCallback : 500;
   let positions = [];
   let timeBaseline;
-  const wrappedCb = throttle(callbackWrapper((source) => {
-    const totalOffset = Date.now() - timeBaseline;
-    mousemoveCb(positions.map((p) => {
-      p.timeOffset -= totalOffset;
-      return p;
-    }), source);
-    positions = [];
-    timeBaseline = null;
-  }), callbackThreshold);
-  const updatePosition = callbackWrapper(throttle(callbackWrapper((evt) => {
-    const target = getEventTarget(evt);
-    const { clientX, clientY } = isTouchEvent(evt) ? evt.changedTouches[0] : evt;
-    if (!timeBaseline) {
-      timeBaseline = Date.now();
-    }
-    positions.push({
-      x: clientX,
-      y: clientY,
-      id: mirror2.getId(target),
-      timeOffset: Date.now() - timeBaseline
-    });
-    wrappedCb(typeof DragEvent !== "undefined" && evt instanceof DragEvent ? IncrementalSource.Drag : evt instanceof MouseEvent ? IncrementalSource.MouseMove : IncrementalSource.TouchMove);
-  }), threshold, {
-    trailing: false
-  }));
+  const wrappedCb = throttle(
+    callbackWrapper((source) => {
+      const totalOffset = Date.now() - timeBaseline;
+      mousemoveCb(
+        positions.map((p) => {
+          p.timeOffset -= totalOffset;
+          return p;
+        }),
+        source
+      );
+      positions = [];
+      timeBaseline = null;
+    }),
+    callbackThreshold
+  );
+  const updatePosition = callbackWrapper(
+    throttle(
+      callbackWrapper((evt) => {
+        const target = getEventTarget(evt);
+        const { clientX, clientY } = isTouchEvent(evt) ? evt.changedTouches[0] : evt;
+        if (!timeBaseline) {
+          timeBaseline = Date.now();
+        }
+        positions.push({
+          x: clientX,
+          y: clientY,
+          id: mirror2.getId(target),
+          timeOffset: Date.now() - timeBaseline
+        });
+        wrappedCb(
+          typeof DragEvent !== "undefined" && evt instanceof DragEvent ? IncrementalSource.Drag : evt instanceof MouseEvent ? IncrementalSource.MouseMove : IncrementalSource.TouchMove
+        );
+      }),
+      threshold,
+      {
+        trailing: false
+      }
+    )
+  );
   const handlers = [
     on("mousemove", updatePosition, doc),
     on("touchmove", updatePosition, doc),
@@ -2948,7 +3064,14 @@ function initMoveObserver({ mousemoveCb, sampling, doc, mirror: mirror2 }) {
     handlers.forEach((h) => h());
   });
 }
-function initMouseInteractionObserver({ mouseInteractionCb, doc, mirror: mirror2, blockClass, blockSelector, sampling }) {
+function initMouseInteractionObserver({
+  mouseInteractionCb,
+  doc,
+  mirror: mirror2,
+  blockClass,
+  blockSelector,
+  sampling
+}) {
   if (sampling.mouseInteraction === false) {
     return () => {
     };
@@ -2975,7 +3098,9 @@ function initMouseInteractionObserver({ mouseInteractionCb, doc, mirror: mirror2
       });
     };
   };
-  Object.keys(MouseInteractions).filter((key) => Number.isNaN(Number(key)) && !key.endsWith("_Departed") && disableMap[key] !== false).forEach((eventKey) => {
+  Object.keys(MouseInteractions).filter(
+    (key) => Number.isNaN(Number(key)) && !key.endsWith("_Departed") && disableMap[key] !== false
+  ).forEach((eventKey) => {
     const eventName = eventKey.toLowerCase();
     const handler = getHandler(eventKey);
     handlers.push(on(eventName, handler, doc));
@@ -2984,45 +3109,62 @@ function initMouseInteractionObserver({ mouseInteractionCb, doc, mirror: mirror2
     handlers.forEach((h) => h());
   });
 }
-function initScrollObserver({ scrollCb, doc, mirror: mirror2, blockClass, blockSelector, sampling }) {
-  const updatePosition = callbackWrapper(throttle(callbackWrapper((evt) => {
-    const target = getEventTarget(evt);
-    if (!target || isBlocked(target, blockClass, blockSelector, true)) {
-      return;
-    }
-    const id = mirror2.getId(target);
-    if (target === doc && doc.defaultView) {
-      const scrollLeftTop = getWindowScroll(doc.defaultView);
-      scrollCb({
-        id,
-        x: scrollLeftTop.left,
-        y: scrollLeftTop.top
-      });
-    } else {
-      scrollCb({
-        id,
-        x: target.scrollLeft,
-        y: target.scrollTop
-      });
-    }
-  }), sampling.scroll || 100));
+function initScrollObserver({
+  scrollCb,
+  doc,
+  mirror: mirror2,
+  blockClass,
+  blockSelector,
+  sampling
+}) {
+  const updatePosition = callbackWrapper(
+    throttle(
+      callbackWrapper((evt) => {
+        const target = getEventTarget(evt);
+        if (!target || isBlocked(target, blockClass, blockSelector, true)) {
+          return;
+        }
+        const id = mirror2.getId(target);
+        if (target === doc && doc.defaultView) {
+          const scrollLeftTop = getWindowScroll(doc.defaultView);
+          scrollCb({
+            id,
+            x: scrollLeftTop.left,
+            y: scrollLeftTop.top
+          });
+        } else {
+          scrollCb({
+            id,
+            x: target.scrollLeft,
+            y: target.scrollTop
+          });
+        }
+      }),
+      sampling.scroll || 100
+    )
+  );
   return on("scroll", updatePosition, doc);
 }
 function initViewportResizeObserver({ viewportResizeCb }) {
   let lastH = -1;
   let lastW = -1;
-  const updateDimension = callbackWrapper(throttle(callbackWrapper(() => {
-    const height = getWindowHeight();
-    const width = getWindowWidth();
-    if (lastH !== height || lastW !== width) {
-      viewportResizeCb({
-        width: Number(width),
-        height: Number(height)
-      });
-      lastH = height;
-      lastW = width;
-    }
-  }), 200));
+  const updateDimension = callbackWrapper(
+    throttle(
+      callbackWrapper(() => {
+        const height = getWindowHeight();
+        const width = getWindowWidth();
+        if (lastH !== height || lastW !== width) {
+          viewportResizeCb({
+            width: Number(width),
+            height: Number(height)
+          });
+          lastH = height;
+          lastW = width;
+        }
+      }),
+      200
+    )
+  );
   return on("resize", updateDimension, window);
 }
 function wrapEventWithUserTriggeredFlag(v2, enable) {
@@ -3033,7 +3175,18 @@ function wrapEventWithUserTriggeredFlag(v2, enable) {
 }
 var INPUT_TAGS = ["INPUT", "TEXTAREA", "SELECT"];
 var lastInputValueMap = /* @__PURE__ */ new WeakMap();
-function initInputObserver({ inputCb, doc, mirror: mirror2, blockClass, blockSelector, ignoreClass, maskInputOptions, maskInputFn, sampling, userTriggeredOnInput }) {
+function initInputObserver({
+  inputCb,
+  doc,
+  mirror: mirror2,
+  blockClass,
+  blockSelector,
+  ignoreClass,
+  maskInputOptions,
+  maskInputFn,
+  sampling,
+  userTriggeredOnInput
+}) {
   function eventHandler(event) {
     let target = getEventTarget(event);
     const userTriggered = event.isTrusted;
@@ -3068,16 +3221,28 @@ function initInputObserver({ inputCb, doc, mirror: mirror2, blockClass, blockSel
         maskInputFn
       });
     }
-    cbWithDedup(target, callbackWrapper(wrapEventWithUserTriggeredFlag)({ text, isChecked, userTriggered }, userTriggeredOnInput));
+    cbWithDedup(
+      target,
+      callbackWrapper(wrapEventWithUserTriggeredFlag)(
+        { text, isChecked, userTriggered },
+        userTriggeredOnInput
+      )
+    );
     const name = target.name;
     if (type === "radio" && name && isChecked) {
       doc.querySelectorAll(`input[type="radio"][name="${name}"]`).forEach((el) => {
         if (el !== target) {
-          cbWithDedup(el, callbackWrapper(wrapEventWithUserTriggeredFlag)({
-            text: el.value,
-            isChecked: !isChecked,
-            userTriggered: false
-          }, userTriggeredOnInput));
+          cbWithDedup(
+            el,
+            callbackWrapper(wrapEventWithUserTriggeredFlag)(
+              {
+                text: el.value,
+                isChecked: !isChecked,
+                userTriggered: false
+              },
+              userTriggeredOnInput
+            )
+          );
         }
       });
     }
@@ -3091,14 +3256,19 @@ function initInputObserver({ inputCb, doc, mirror: mirror2, blockClass, blockSel
     }
   }
   const events = sampling.input === "last" ? ["change"] : ["input", "change"];
-  const handlers = events.map((eventName) => on(eventName, callbackWrapper(eventHandler), doc));
+  const handlers = events.map(
+    (eventName) => on(eventName, callbackWrapper(eventHandler), doc)
+  );
   const currentWindow = doc.defaultView;
   if (!currentWindow) {
     return () => {
       handlers.forEach((h) => h());
     };
   }
-  const propertyDescriptor = currentWindow.Object.getOwnPropertyDescriptor(currentWindow.HTMLInputElement.prototype, "value");
+  const propertyDescriptor = currentWindow.Object.getOwnPropertyDescriptor(
+    currentWindow.HTMLInputElement.prototype,
+    "value"
+  );
   const hookProperties = [
     [currentWindow.HTMLInputElement.prototype, "value"],
     [currentWindow.HTMLInputElement.prototype, "checked"],
@@ -3108,14 +3278,24 @@ function initInputObserver({ inputCb, doc, mirror: mirror2, blockClass, blockSel
     [currentWindow.HTMLOptionElement.prototype, "selected"]
   ];
   if (propertyDescriptor && propertyDescriptor.set) {
-    handlers.push(...hookProperties.map((p) => hookSetter(p[0], p[1], {
-      set() {
-        callbackWrapper(eventHandler)({
-          target: this,
-          isTrusted: false
-        });
-      }
-    }, false, currentWindow)));
+    handlers.push(
+      ...hookProperties.map(
+        (p) => hookSetter(
+          p[0],
+          p[1],
+          {
+            set() {
+              callbackWrapper(eventHandler)({
+                target: this,
+                isTrusted: false
+              });
+            }
+          },
+          false,
+          currentWindow
+        )
+      )
+    );
   }
   return callbackWrapper(() => {
     handlers.forEach((h) => h());
@@ -3159,7 +3339,11 @@ function initStyleSheetObserver({ styleSheetRuleCb, mirror: mirror2, stylesheetM
   win.CSSStyleSheet.prototype.insertRule = new Proxy(insertRule, {
     apply: callbackWrapper((target, thisArg, argumentsList) => {
       const [rule, index] = argumentsList;
-      const { id, styleId } = getIdAndStyleId(thisArg, mirror2, stylesheetManager.styleMirror);
+      const { id, styleId } = getIdAndStyleId(
+        thisArg,
+        mirror2,
+        stylesheetManager.styleMirror
+      );
       if (id && id !== -1 || styleId && styleId !== -1) {
         styleSheetRuleCb({
           id,
@@ -3174,7 +3358,11 @@ function initStyleSheetObserver({ styleSheetRuleCb, mirror: mirror2, stylesheetM
   win.CSSStyleSheet.prototype.deleteRule = new Proxy(deleteRule, {
     apply: callbackWrapper((target, thisArg, argumentsList) => {
       const [index] = argumentsList;
-      const { id, styleId } = getIdAndStyleId(thisArg, mirror2, stylesheetManager.styleMirror);
+      const { id, styleId } = getIdAndStyleId(
+        thisArg,
+        mirror2,
+        stylesheetManager.styleMirror
+      );
       if (id && id !== -1 || styleId && styleId !== -1) {
         styleSheetRuleCb({
           id,
@@ -3191,7 +3379,11 @@ function initStyleSheetObserver({ styleSheetRuleCb, mirror: mirror2, stylesheetM
     win.CSSStyleSheet.prototype.replace = new Proxy(replace, {
       apply: callbackWrapper((target, thisArg, argumentsList) => {
         const [text] = argumentsList;
-        const { id, styleId } = getIdAndStyleId(thisArg, mirror2, stylesheetManager.styleMirror);
+        const { id, styleId } = getIdAndStyleId(
+          thisArg,
+          mirror2,
+          stylesheetManager.styleMirror
+        );
         if (id && id !== -1 || styleId && styleId !== -1) {
           styleSheetRuleCb({
             id,
@@ -3209,7 +3401,11 @@ function initStyleSheetObserver({ styleSheetRuleCb, mirror: mirror2, stylesheetM
     win.CSSStyleSheet.prototype.replaceSync = new Proxy(replaceSync, {
       apply: callbackWrapper((target, thisArg, argumentsList) => {
         const [text] = argumentsList;
-        const { id, styleId } = getIdAndStyleId(thisArg, mirror2, stylesheetManager.styleMirror);
+        const { id, styleId } = getIdAndStyleId(
+          thisArg,
+          mirror2,
+          stylesheetManager.styleMirror
+        );
         if (id && id !== -1 || styleId && styleId !== -1) {
           styleSheetRuleCb({
             id,
@@ -3241,44 +3437,55 @@ function initStyleSheetObserver({ styleSheetRuleCb, mirror: mirror2, stylesheetM
       insertRule: type.prototype.insertRule,
       deleteRule: type.prototype.deleteRule
     };
-    type.prototype.insertRule = new Proxy(unmodifiedFunctions[typeKey].insertRule, {
-      apply: callbackWrapper((target, thisArg, argumentsList) => {
-        const [rule, index] = argumentsList;
-        const { id, styleId } = getIdAndStyleId(thisArg.parentStyleSheet, mirror2, stylesheetManager.styleMirror);
-        if (id && id !== -1 || styleId && styleId !== -1) {
-          styleSheetRuleCb({
-            id,
-            styleId,
-            adds: [
-              {
-                rule,
-                index: [
-                  ...getNestedCSSRulePositions(thisArg),
-                  index || 0
-                ]
-              }
-            ]
-          });
-        }
-        return target.apply(thisArg, argumentsList);
-      })
-    });
-    type.prototype.deleteRule = new Proxy(unmodifiedFunctions[typeKey].deleteRule, {
-      apply: callbackWrapper((target, thisArg, argumentsList) => {
-        const [index] = argumentsList;
-        const { id, styleId } = getIdAndStyleId(thisArg.parentStyleSheet, mirror2, stylesheetManager.styleMirror);
-        if (id && id !== -1 || styleId && styleId !== -1) {
-          styleSheetRuleCb({
-            id,
-            styleId,
-            removes: [
-              { index: [...getNestedCSSRulePositions(thisArg), index] }
-            ]
-          });
-        }
-        return target.apply(thisArg, argumentsList);
-      })
-    });
+    type.prototype.insertRule = new Proxy(
+      unmodifiedFunctions[typeKey].insertRule,
+      {
+        apply: callbackWrapper((target, thisArg, argumentsList) => {
+          const [rule, index] = argumentsList;
+          const { id, styleId } = getIdAndStyleId(
+            thisArg.parentStyleSheet,
+            mirror2,
+            stylesheetManager.styleMirror
+          );
+          if (id && id !== -1 || styleId && styleId !== -1) {
+            styleSheetRuleCb({
+              id,
+              styleId,
+              adds: [
+                {
+                  rule,
+                  index: [...getNestedCSSRulePositions(thisArg), index || 0]
+                }
+              ]
+            });
+          }
+          return target.apply(thisArg, argumentsList);
+        })
+      }
+    );
+    type.prototype.deleteRule = new Proxy(
+      unmodifiedFunctions[typeKey].deleteRule,
+      {
+        apply: callbackWrapper((target, thisArg, argumentsList) => {
+          const [index] = argumentsList;
+          const { id, styleId } = getIdAndStyleId(
+            thisArg.parentStyleSheet,
+            mirror2,
+            stylesheetManager.styleMirror
+          );
+          if (id && id !== -1 || styleId && styleId !== -1) {
+            styleSheetRuleCb({
+              id,
+              styleId,
+              removes: [
+                { index: [...getNestedCSSRulePositions(thisArg), index] }
+              ]
+            });
+          }
+          return target.apply(thisArg, argumentsList);
+        })
+      }
+    );
   });
   return callbackWrapper(() => {
     win.CSSStyleSheet.prototype.insertRule = insertRule;
@@ -3299,7 +3506,10 @@ function initAdoptedStyleSheetObserver({ mirror: mirror2, stylesheetManager }, h
   else
     hostId = mirror2.getId(host.host);
   const patchTarget = host.nodeName === "#document" ? (_a2 = host.defaultView) === null || _a2 === void 0 ? void 0 : _a2.Document : (_c = (_b2 = host.ownerDocument) === null || _b2 === void 0 ? void 0 : _b2.defaultView) === null || _c === void 0 ? void 0 : _c.ShadowRoot;
-  const originalPropertyDescriptor = Object.getOwnPropertyDescriptor(patchTarget === null || patchTarget === void 0 ? void 0 : patchTarget.prototype, "adoptedStyleSheets");
+  const originalPropertyDescriptor = Object.getOwnPropertyDescriptor(
+    patchTarget === null || patchTarget === void 0 ? void 0 : patchTarget.prototype,
+    "adoptedStyleSheets"
+  );
   if (hostId === null || hostId === -1 || !patchTarget || !originalPropertyDescriptor)
     return () => {
     };
@@ -3340,7 +3550,11 @@ function initStyleDeclarationObserver({ styleDeclarationCb, mirror: mirror2, ign
       if (ignoreCSSAttributes.has(property)) {
         return setProperty.apply(thisArg, [property, value, priority]);
       }
-      const { id, styleId } = getIdAndStyleId((_a2 = thisArg.parentRule) === null || _a2 === void 0 ? void 0 : _a2.parentStyleSheet, mirror2, stylesheetManager.styleMirror);
+      const { id, styleId } = getIdAndStyleId(
+        (_a2 = thisArg.parentRule) === null || _a2 === void 0 ? void 0 : _a2.parentStyleSheet,
+        mirror2,
+        stylesheetManager.styleMirror
+      );
       if (id && id !== -1 || styleId && styleId !== -1) {
         styleDeclarationCb({
           id,
@@ -3364,7 +3578,11 @@ function initStyleDeclarationObserver({ styleDeclarationCb, mirror: mirror2, ign
       if (ignoreCSSAttributes.has(property)) {
         return removeProperty.apply(thisArg, [property]);
       }
-      const { id, styleId } = getIdAndStyleId((_a2 = thisArg.parentRule) === null || _a2 === void 0 ? void 0 : _a2.parentStyleSheet, mirror2, stylesheetManager.styleMirror);
+      const { id, styleId } = getIdAndStyleId(
+        (_a2 = thisArg.parentRule) === null || _a2 === void 0 ? void 0 : _a2.parentStyleSheet,
+        mirror2,
+        stylesheetManager.styleMirror
+      );
       if (id && id !== -1 || styleId && styleId !== -1) {
         styleDeclarationCb({
           id,
@@ -3383,22 +3601,33 @@ function initStyleDeclarationObserver({ styleDeclarationCb, mirror: mirror2, ign
     win.CSSStyleDeclaration.prototype.removeProperty = removeProperty;
   });
 }
-function initMediaInteractionObserver({ mediaInteractionCb, blockClass, blockSelector, mirror: mirror2, sampling }) {
-  const handler = callbackWrapper((type) => throttle(callbackWrapper((event) => {
-    const target = getEventTarget(event);
-    if (!target || isBlocked(target, blockClass, blockSelector, true)) {
-      return;
-    }
-    const { currentTime, volume, muted, playbackRate } = target;
-    mediaInteractionCb({
-      type,
-      id: mirror2.getId(target),
-      currentTime,
-      volume,
-      muted,
-      playbackRate
-    });
-  }), sampling.media || 500));
+function initMediaInteractionObserver({
+  mediaInteractionCb,
+  blockClass,
+  blockSelector,
+  mirror: mirror2,
+  sampling
+}) {
+  const handler = callbackWrapper(
+    (type) => throttle(
+      callbackWrapper((event) => {
+        const target = getEventTarget(event);
+        if (!target || isBlocked(target, blockClass, blockSelector, true)) {
+          return;
+        }
+        const { currentTime, volume, muted, playbackRate } = target;
+        mediaInteractionCb({
+          type,
+          id: mirror2.getId(target),
+          currentTime,
+          volume,
+          muted,
+          playbackRate
+        });
+      }),
+      sampling.media || 500
+    )
+  );
   const handlers = [
     on("play", handler(0)),
     on("pause", handler(1)),
@@ -3431,13 +3660,16 @@ function initFontObserver({ fontCb, doc }) {
   };
   const restoreHandler = patch(doc.fonts, "add", function(original) {
     return function(fontFace) {
-      setTimeout(callbackWrapper(() => {
-        const p = fontMap.get(fontFace);
-        if (p) {
-          fontCb(p);
-          fontMap.delete(fontFace);
-        }
-      }), 0);
+      setTimeout(
+        callbackWrapper(() => {
+          const p = fontMap.get(fontFace);
+          if (p) {
+            fontCb(p);
+            fontMap.delete(fontFace);
+          }
+        }),
+        0
+      );
       return original.apply(this, [fontFace]);
     };
   });
@@ -3478,7 +3710,20 @@ function initSelectionObserver(param) {
   return on("selectionchange", updateSelection);
 }
 function mergeHooks(o2, hooks) {
-  const { mutationCb, mousemoveCb, mouseInteractionCb, scrollCb, viewportResizeCb, inputCb, mediaInteractionCb, styleSheetRuleCb, styleDeclarationCb, canvasMutationCb, fontCb, selectionCb } = o2;
+  const {
+    mutationCb,
+    mousemoveCb,
+    mouseInteractionCb,
+    scrollCb,
+    viewportResizeCb,
+    inputCb,
+    mediaInteractionCb,
+    styleSheetRuleCb,
+    styleDeclarationCb,
+    canvasMutationCb,
+    fontCb,
+    selectionCb
+  } = o2;
   o2.mutationCb = (...p) => {
     if (hooks.mutation) {
       hooks.mutation(...p);
@@ -3576,7 +3821,9 @@ function initObservers(o2, hooks = {}) {
   const selectionObserver = initSelectionObserver(o2);
   const pluginHandlers = [];
   for (const plugin of o2.plugins) {
-    pluginHandlers.push(plugin.observer(plugin.callback, currentWindow, plugin.options));
+    pluginHandlers.push(
+      plugin.observer(plugin.callback, currentWindow, plugin.options)
+    );
   }
   return callbackWrapper(() => {
     mutationBuffers.forEach((b) => b.reset());
@@ -3599,7 +3846,9 @@ function hasNestedCSSRule(prop) {
   return typeof window[prop] !== "undefined";
 }
 function canMonkeyPatchNestedCSSRule(prop) {
-  return Boolean(typeof window[prop] !== "undefined" && window[prop].prototype && "insertRule" in window[prop].prototype && "deleteRule" in window[prop].prototype);
+  return Boolean(
+    typeof window[prop] !== "undefined" && window[prop].prototype && "insertRule" in window[prop].prototype && "deleteRule" in window[prop].prototype
+  );
 }
 
 // ../rrweb/packages/rrweb/es/rrweb/rrweb/packages/rrweb/src/record/cross-origin-iframe-mirror.js
@@ -3623,7 +3872,9 @@ var CrossOriginIframeMirror = class {
   getIds(iframe, remoteId) {
     const idToRemoteIdMap = this.getIdToRemoteIdMap(iframe);
     const remoteIdToIdMap = this.getRemoteIdToIdMap(iframe);
-    return remoteId.map((id) => this.getId(iframe, id, idToRemoteIdMap, remoteIdToIdMap));
+    return remoteId.map(
+      (id) => this.getId(iframe, id, idToRemoteIdMap, remoteIdToIdMap)
+    );
   }
   getRemoteId(iframe, id, map) {
     const remoteIdToIdMap = map || this.getRemoteIdToIdMap(iframe);
@@ -3676,7 +3927,11 @@ var IframeManager = class {
     this.wrappedEmit = options.wrappedEmit;
     this.stylesheetManager = options.stylesheetManager;
     this.recordCrossOriginIframes = options.recordCrossOriginIframes;
-    this.crossOriginIframeStyleMirror = new CrossOriginIframeMirror(this.stylesheetManager.styleMirror.generateId.bind(this.stylesheetManager.styleMirror));
+    this.crossOriginIframeStyleMirror = new CrossOriginIframeMirror(
+      this.stylesheetManager.styleMirror.generateId.bind(
+        this.stylesheetManager.styleMirror
+      )
+    );
     this.mirror = options.mirror;
     if (this.recordCrossOriginIframes) {
       window.addEventListener("message", this.handleMessage.bind(this));
@@ -3707,7 +3962,10 @@ var IframeManager = class {
     });
     (_a2 = this.loadListener) === null || _a2 === void 0 ? void 0 : _a2.call(this, iframeEl);
     if (iframeEl.contentDocument && iframeEl.contentDocument.adoptedStyleSheets && iframeEl.contentDocument.adoptedStyleSheets.length > 0)
-      this.stylesheetManager.adoptStyleSheets(iframeEl.contentDocument.adoptedStyleSheets, this.mirror.getId(iframeEl.contentDocument));
+      this.stylesheetManager.adoptStyleSheets(
+        iframeEl.contentDocument.adoptedStyleSheets,
+        this.mirror.getId(iframeEl.contentDocument)
+      );
   }
   handleMessage(message) {
     const crossOriginMessageEvent = message;
@@ -3719,9 +3977,15 @@ var IframeManager = class {
     const iframeEl = this.crossOriginIframeMap.get(iframeSourceWindow);
     if (!iframeEl)
       return;
-    const transformedEvent = this.transformCrossOriginEvent(iframeEl, crossOriginMessageEvent.data.event);
+    const transformedEvent = this.transformCrossOriginEvent(
+      iframeEl,
+      crossOriginMessageEvent.data.event
+    );
     if (transformedEvent)
-      this.wrappedEmit(transformedEvent, crossOriginMessageEvent.data.isCheckout);
+      this.wrappedEmit(
+        transformedEvent,
+        crossOriginMessageEvent.data.isCheckout
+      );
   }
   transformCrossOriginEvent(iframeEl, e2) {
     var _a2;
@@ -3761,7 +4025,12 @@ var IframeManager = class {
         return e2;
       }
       case EventType.Custom: {
-        this.replaceIds(e2.data.payload, iframeEl, ["id", "parentId", "previousId", "nextId"]);
+        this.replaceIds(e2.data.payload, iframeEl, [
+          "id",
+          "parentId",
+          "previousId",
+          "nextId"
+        ]);
         return e2;
       }
       case EventType.IncrementalSnapshot: {
@@ -3892,33 +4161,62 @@ var ShadowDomManager = class {
     if (this.shadowDoms.has(shadowRoot))
       return;
     this.shadowDoms.add(shadowRoot);
-    const observer = initMutationObserver(Object.assign(Object.assign({}, this.bypassOptions), { doc, mutationCb: this.mutationCb, mirror: this.mirror, shadowDomManager: this }), shadowRoot);
+    const observer = initMutationObserver(
+      Object.assign(Object.assign({}, this.bypassOptions), {
+        doc,
+        mutationCb: this.mutationCb,
+        mirror: this.mirror,
+        shadowDomManager: this
+      }),
+      shadowRoot
+    );
     this.restoreHandlers.push(() => observer.disconnect());
-    this.restoreHandlers.push(initScrollObserver(Object.assign(Object.assign({}, this.bypassOptions), { scrollCb: this.scrollCb, doc: shadowRoot, mirror: this.mirror })));
+    this.restoreHandlers.push(
+      initScrollObserver(
+        Object.assign(Object.assign({}, this.bypassOptions), {
+          scrollCb: this.scrollCb,
+          doc: shadowRoot,
+          mirror: this.mirror
+        })
+      )
+    );
     setTimeout(() => {
       if (shadowRoot.adoptedStyleSheets && shadowRoot.adoptedStyleSheets.length > 0)
-        this.bypassOptions.stylesheetManager.adoptStyleSheets(shadowRoot.adoptedStyleSheets, this.mirror.getId(shadowRoot.host));
-      this.restoreHandlers.push(initAdoptedStyleSheetObserver({
-        mirror: this.mirror,
-        stylesheetManager: this.bypassOptions.stylesheetManager
-      }, shadowRoot));
+        this.bypassOptions.stylesheetManager.adoptStyleSheets(
+          shadowRoot.adoptedStyleSheets,
+          this.mirror.getId(shadowRoot.host)
+        );
+      this.restoreHandlers.push(
+        initAdoptedStyleSheetObserver(
+          {
+            mirror: this.mirror,
+            stylesheetManager: this.bypassOptions.stylesheetManager
+          },
+          shadowRoot
+        )
+      );
     }, 0);
   }
   observeAttachShadow(iframeElement) {
     if (!iframeElement.contentWindow || !iframeElement.contentDocument)
       return;
-    this.patchAttachShadow(iframeElement.contentWindow.Element, iframeElement.contentDocument);
+    this.patchAttachShadow(
+      iframeElement.contentWindow.Element,
+      iframeElement.contentDocument
+    );
   }
   patchAttachShadow(element, doc) {
     const manager = this;
-    this.restoreHandlers.push(patch(element.prototype, "attachShadow", function(original) {
-      return function(option) {
-        const shadowRoot = original.call(this, option);
-        if (this.shadowRoot && inDom(this))
-          manager.addShadowRoot(this.shadowRoot, doc);
-        return shadowRoot;
-      };
-    }));
+    this.restoreHandlers.push(
+      patch(element.prototype, "attachShadow", function(original) {
+        return function(option) {
+          const shadowRoot = original.call(this, option);
+          if (this.shadowRoot && inDom(this))
+            manager.addShadowRoot(this.shadowRoot, doc);
+          return shadowRoot;
+        };
+      })
+    );
   }
   reset() {
     this.restoreHandlers.forEach((handler) => {
@@ -4075,46 +4373,60 @@ var isInstanceOfWebGLObject = (value, win) => {
     "WebGLVertexArrayObject",
     "WebGLVertexArrayObjectOES"
   ];
-  const supportedWebGLConstructorNames = webGLConstructorNames.filter((name) => typeof win[name] === "function");
-  return Boolean(supportedWebGLConstructorNames.find((name) => value instanceof win[name]));
+  const supportedWebGLConstructorNames = webGLConstructorNames.filter(
+    (name) => typeof win[name] === "function"
+  );
+  return Boolean(
+    supportedWebGLConstructorNames.find((name) => value instanceof win[name])
+  );
 };
 
 // ../rrweb/packages/rrweb/es/rrweb/rrweb/packages/rrweb/src/record/observers/canvas/2d.js
 function initCanvas2DMutationObserver(cb, win, blockClass, blockSelector) {
   const handlers = [];
-  const props2D = Object.getOwnPropertyNames(win.CanvasRenderingContext2D.prototype);
+  const props2D = Object.getOwnPropertyNames(
+    win.CanvasRenderingContext2D.prototype
+  );
   for (const prop of props2D) {
     try {
       if (typeof win.CanvasRenderingContext2D.prototype[prop] !== "function") {
         continue;
       }
-      const restoreHandler = patch(win.CanvasRenderingContext2D.prototype, prop, function(original) {
-        return function(...args) {
-          if (!isBlocked(this.canvas, blockClass, blockSelector, true)) {
-            setTimeout(() => {
-              const recordArgs = serializeArgs([...args], win, this);
-              cb(this.canvas, {
-                type: CanvasContext["2D"],
-                property: prop,
-                args: recordArgs
-              });
-            }, 0);
-          }
-          return original.apply(this, args);
-        };
-      });
+      const restoreHandler = patch(
+        win.CanvasRenderingContext2D.prototype,
+        prop,
+        function(original) {
+          return function(...args) {
+            if (!isBlocked(this.canvas, blockClass, blockSelector, true)) {
+              setTimeout(() => {
+                const recordArgs = serializeArgs([...args], win, this);
+                cb(this.canvas, {
+                  type: CanvasContext["2D"],
+                  property: prop,
+                  args: recordArgs
+                });
+              }, 0);
+            }
+            return original.apply(this, args);
+          };
+        }
+      );
       handlers.push(restoreHandler);
     } catch (_a2) {
-      const hookHandler = hookSetter(win.CanvasRenderingContext2D.prototype, prop, {
-        set(v2) {
-          cb(this.canvas, {
-            type: CanvasContext["2D"],
-            property: prop,
-            args: [v2],
-            setter: true
-          });
+      const hookHandler = hookSetter(
+        win.CanvasRenderingContext2D.prototype,
+        prop,
+        {
+          set(v2) {
+            cb(this.canvas, {
+              type: CanvasContext["2D"],
+              property: prop,
+              args: [v2],
+              setter: true
+            });
+          }
         }
-      });
+      );
       handlers.push(hookHandler);
     }
   }
@@ -4127,18 +4439,22 @@ function initCanvas2DMutationObserver(cb, win, blockClass, blockSelector) {
 function initCanvasContextObserver(win, blockClass, blockSelector) {
   const handlers = [];
   try {
-    const restoreGetContext = patch(win.HTMLCanvasElement.prototype, "getContext", function(original) {
-      return function(contextType, ...args) {
-        const ctx = original.apply(this, [contextType, ...args]);
-        if (ctx) {
-          if (!isBlocked(this, blockClass, blockSelector, true)) {
-            if (!this.__context)
-              this.__context = contextType;
+    const restoreGetContext = patch(
+      win.HTMLCanvasElement.prototype,
+      "getContext",
+      function(original) {
+        return function(contextType, ...args) {
+          const ctx = original.apply(this, [contextType, ...args]);
+          if (ctx) {
+            if (!isBlocked(this, blockClass, blockSelector, true)) {
+              if (!this.__context)
+                this.__context = contextType;
+            }
           }
-        }
-        return ctx;
-      };
-    });
+          return ctx;
+        };
+      }
+    );
     handlers.push(restoreGetContext);
   } catch (_a2) {
     console.error("failed to patch HTMLCanvasElement.prototype.getContext");
@@ -4200,9 +4516,29 @@ function patchGLPrototype(prototype, type, cb, blockClass, blockSelector, mirror
 }
 function initCanvasWebGLMutationObserver(cb, win, blockClass, blockSelector, mirror2) {
   const handlers = [];
-  handlers.push(...patchGLPrototype(win.WebGLRenderingContext.prototype, CanvasContext.WebGL, cb, blockClass, blockSelector, mirror2, win));
+  handlers.push(
+    ...patchGLPrototype(
+      win.WebGLRenderingContext.prototype,
+      CanvasContext.WebGL,
+      cb,
+      blockClass,
+      blockSelector,
+      mirror2,
+      win
+    )
+  );
   if (typeof win.WebGL2RenderingContext !== "undefined") {
-    handlers.push(...patchGLPrototype(win.WebGL2RenderingContext.prototype, CanvasContext.WebGL2, cb, blockClass, blockSelector, mirror2, win));
+    handlers.push(
+      ...patchGLPrototype(
+        win.WebGL2RenderingContext.prototype,
+        CanvasContext.WebGL2,
+        cb,
+        blockClass,
+        blockSelector,
+        mirror2,
+        win
+      )
+    );
   }
   return () => {
     handlers.forEach((h) => h());
@@ -4239,7 +4575,11 @@ function createBase64WorkerFactory(base64, sourcemapArg, enableUnicodeArg) {
 }
 
 // ../rrweb/packages/rrweb/es/rrweb/_virtual/image-bitmap-data-url-worker.js
-var WorkerFactory = createBase64WorkerFactory("Lyogcm9sbHVwLXBsdWdpbi13ZWItd29ya2VyLWxvYWRlciAqLwooZnVuY3Rpb24gKCkgewogICAgJ3VzZSBzdHJpY3QnOwoKICAgIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioNCiAgICBDb3B5cmlnaHQgKGMpIE1pY3Jvc29mdCBDb3Jwb3JhdGlvbi4NCg0KICAgIFBlcm1pc3Npb24gdG8gdXNlLCBjb3B5LCBtb2RpZnksIGFuZC9vciBkaXN0cmlidXRlIHRoaXMgc29mdHdhcmUgZm9yIGFueQ0KICAgIHB1cnBvc2Ugd2l0aCBvciB3aXRob3V0IGZlZSBpcyBoZXJlYnkgZ3JhbnRlZC4NCg0KICAgIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAiQVMgSVMiIEFORCBUSEUgQVVUSE9SIERJU0NMQUlNUyBBTEwgV0FSUkFOVElFUyBXSVRIDQogICAgUkVHQVJEIFRPIFRISVMgU09GVFdBUkUgSU5DTFVESU5HIEFMTCBJTVBMSUVEIFdBUlJBTlRJRVMgT0YgTUVSQ0hBTlRBQklMSVRZDQogICAgQU5EIEZJVE5FU1MuIElOIE5PIEVWRU5UIFNIQUxMIFRIRSBBVVRIT1IgQkUgTElBQkxFIEZPUiBBTlkgU1BFQ0lBTCwgRElSRUNULA0KICAgIElORElSRUNULCBPUiBDT05TRVFVRU5USUFMIERBTUFHRVMgT1IgQU5ZIERBTUFHRVMgV0hBVFNPRVZFUiBSRVNVTFRJTkcgRlJPTQ0KICAgIExPU1MgT0YgVVNFLCBEQVRBIE9SIFBST0ZJVFMsIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBORUdMSUdFTkNFIE9SDQogICAgT1RIRVIgVE9SVElPVVMgQUNUSU9OLCBBUklTSU5HIE9VVCBPRiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFVTRSBPUg0KICAgIFBFUkZPUk1BTkNFIE9GIFRISVMgU09GVFdBUkUuDQogICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogKi8NCg0KICAgIGZ1bmN0aW9uIF9fYXdhaXRlcih0aGlzQXJnLCBfYXJndW1lbnRzLCBQLCBnZW5lcmF0b3IpIHsNCiAgICAgICAgZnVuY3Rpb24gYWRvcHQodmFsdWUpIHsgcmV0dXJuIHZhbHVlIGluc3RhbmNlb2YgUCA/IHZhbHVlIDogbmV3IFAoZnVuY3Rpb24gKHJlc29sdmUpIHsgcmVzb2x2ZSh2YWx1ZSk7IH0pOyB9DQogICAgICAgIHJldHVybiBuZXcgKFAgfHwgKFAgPSBQcm9taXNlKSkoZnVuY3Rpb24gKHJlc29sdmUsIHJlamVjdCkgew0KICAgICAgICAgICAgZnVuY3Rpb24gZnVsZmlsbGVkKHZhbHVlKSB7IHRyeSB7IHN0ZXAoZ2VuZXJhdG9yLm5leHQodmFsdWUpKTsgfSBjYXRjaCAoZSkgeyByZWplY3QoZSk7IH0gfQ0KICAgICAgICAgICAgZnVuY3Rpb24gcmVqZWN0ZWQodmFsdWUpIHsgdHJ5IHsgc3RlcChnZW5lcmF0b3JbInRocm93Il0odmFsdWUpKTsgfSBjYXRjaCAoZSkgeyByZWplY3QoZSk7IH0gfQ0KICAgICAgICAgICAgZnVuY3Rpb24gc3RlcChyZXN1bHQpIHsgcmVzdWx0LmRvbmUgPyByZXNvbHZlKHJlc3VsdC52YWx1ZSkgOiBhZG9wdChyZXN1bHQudmFsdWUpLnRoZW4oZnVsZmlsbGVkLCByZWplY3RlZCk7IH0NCiAgICAgICAgICAgIHN0ZXAoKGdlbmVyYXRvciA9IGdlbmVyYXRvci5hcHBseSh0aGlzQXJnLCBfYXJndW1lbnRzIHx8IFtdKSkubmV4dCgpKTsNCiAgICAgICAgfSk7DQogICAgfQoKICAgIC8qCiAgICAgKiBiYXNlNjQtYXJyYXlidWZmZXIgMS4wLjEgPGh0dHBzOi8vZ2l0aHViLmNvbS9uaWtsYXN2aC9iYXNlNjQtYXJyYXlidWZmZXI+CiAgICAgKiBDb3B5cmlnaHQgKGMpIDIwMjEgTmlrbGFzIHZvbiBIZXJ0emVuIDxodHRwczovL2hlcnR6ZW4uY29tPgogICAgICogUmVsZWFzZWQgdW5kZXIgTUlUIExpY2Vuc2UKICAgICAqLwogICAgdmFyIGNoYXJzID0gJ0FCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5Ky8nOwogICAgLy8gVXNlIGEgbG9va3VwIHRhYmxlIHRvIGZpbmQgdGhlIGluZGV4LgogICAgdmFyIGxvb2t1cCA9IHR5cGVvZiBVaW50OEFycmF5ID09PSAndW5kZWZpbmVkJyA/IFtdIDogbmV3IFVpbnQ4QXJyYXkoMjU2KTsKICAgIGZvciAodmFyIGkgPSAwOyBpIDwgY2hhcnMubGVuZ3RoOyBpKyspIHsKICAgICAgICBsb29rdXBbY2hhcnMuY2hhckNvZGVBdChpKV0gPSBpOwogICAgfQogICAgdmFyIGVuY29kZSA9IGZ1bmN0aW9uIChhcnJheWJ1ZmZlcikgewogICAgICAgIHZhciBieXRlcyA9IG5ldyBVaW50OEFycmF5KGFycmF5YnVmZmVyKSwgaSwgbGVuID0gYnl0ZXMubGVuZ3RoLCBiYXNlNjQgPSAnJzsKICAgICAgICBmb3IgKGkgPSAwOyBpIDwgbGVuOyBpICs9IDMpIHsKICAgICAgICAgICAgYmFzZTY0ICs9IGNoYXJzW2J5dGVzW2ldID4+IDJdOwogICAgICAgICAgICBiYXNlNjQgKz0gY2hhcnNbKChieXRlc1tpXSAmIDMpIDw8IDQpIHwgKGJ5dGVzW2kgKyAxXSA+PiA0KV07CiAgICAgICAgICAgIGJhc2U2NCArPSBjaGFyc1soKGJ5dGVzW2kgKyAxXSAmIDE1KSA8PCAyKSB8IChieXRlc1tpICsgMl0gPj4gNildOwogICAgICAgICAgICBiYXNlNjQgKz0gY2hhcnNbYnl0ZXNbaSArIDJdICYgNjNdOwogICAgICAgIH0KICAgICAgICBpZiAobGVuICUgMyA9PT0gMikgewogICAgICAgICAgICBiYXNlNjQgPSBiYXNlNjQuc3Vic3RyaW5nKDAsIGJhc2U2NC5sZW5ndGggLSAxKSArICc9JzsKICAgICAgICB9CiAgICAgICAgZWxzZSBpZiAobGVuICUgMyA9PT0gMSkgewogICAgICAgICAgICBiYXNlNjQgPSBiYXNlNjQuc3Vic3RyaW5nKDAsIGJhc2U2NC5sZW5ndGggLSAyKSArICc9PSc7CiAgICAgICAgfQogICAgICAgIHJldHVybiBiYXNlNjQ7CiAgICB9OwoKICAgIGNvbnN0IGxhc3RCbG9iTWFwID0gbmV3IE1hcCgpOw0KICAgIGNvbnN0IHRyYW5zcGFyZW50QmxvYk1hcCA9IG5ldyBNYXAoKTsNCiAgICBmdW5jdGlvbiBnZXRUcmFuc3BhcmVudEJsb2JGb3Iod2lkdGgsIGhlaWdodCwgZGF0YVVSTE9wdGlvbnMpIHsNCiAgICAgICAgcmV0dXJuIF9fYXdhaXRlcih0aGlzLCB2b2lkIDAsIHZvaWQgMCwgZnVuY3Rpb24qICgpIHsNCiAgICAgICAgICAgIGNvbnN0IGlkID0gYCR7d2lkdGh9LSR7aGVpZ2h0fWA7DQogICAgICAgICAgICBpZiAoJ09mZnNjcmVlbkNhbnZhcycgaW4gZ2xvYmFsVGhpcykgew0KICAgICAgICAgICAgICAgIGlmICh0cmFuc3BhcmVudEJsb2JNYXAuaGFzKGlkKSkNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHRyYW5zcGFyZW50QmxvYk1hcC5nZXQoaWQpOw0KICAgICAgICAgICAgICAgIGNvbnN0IG9mZnNjcmVlbiA9IG5ldyBPZmZzY3JlZW5DYW52YXMod2lkdGgsIGhlaWdodCk7DQogICAgICAgICAgICAgICAgb2Zmc2NyZWVuLmdldENvbnRleHQoJzJkJyk7DQogICAgICAgICAgICAgICAgY29uc3QgYmxvYiA9IHlpZWxkIG9mZnNjcmVlbi5jb252ZXJ0VG9CbG9iKGRhdGFVUkxPcHRpb25zKTsNCiAgICAgICAgICAgICAgICBjb25zdCBhcnJheUJ1ZmZlciA9IHlpZWxkIGJsb2IuYXJyYXlCdWZmZXIoKTsNCiAgICAgICAgICAgICAgICBjb25zdCBiYXNlNjQgPSBlbmNvZGUoYXJyYXlCdWZmZXIpOw0KICAgICAgICAgICAgICAgIHRyYW5zcGFyZW50QmxvYk1hcC5zZXQoaWQsIGJhc2U2NCk7DQogICAgICAgICAgICAgICAgcmV0dXJuIGJhc2U2NDsNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsc2Ugew0KICAgICAgICAgICAgICAgIHJldHVybiAnJzsNCiAgICAgICAgICAgIH0NCiAgICAgICAgfSk7DQogICAgfQ0KICAgIGNvbnN0IHdvcmtlciA9IHNlbGY7DQogICAgbGV0IGxvZ0RlYnVnID0gZmFsc2U7DQogICAgY29uc3QgZGVidWcgPSAoLi4uYXJncykgPT4gew0KICAgICAgICBpZiAobG9nRGVidWcpIHsNCiAgICAgICAgICAgIGNvbnNvbGUuZGVidWcoLi4uYXJncyk7DQogICAgICAgIH0NCiAgICB9Ow0KICAgIHdvcmtlci5vbm1lc3NhZ2UgPSBmdW5jdGlvbiAoZSkgew0KICAgICAgICByZXR1cm4gX19hd2FpdGVyKHRoaXMsIHZvaWQgMCwgdm9pZCAwLCBmdW5jdGlvbiogKCkgew0KICAgICAgICAgICAgbG9nRGVidWcgPSAhIWUuZGF0YS5sb2dEZWJ1ZzsNCiAgICAgICAgICAgIGlmICgnT2Zmc2NyZWVuQ2FudmFzJyBpbiBnbG9iYWxUaGlzKSB7DQogICAgICAgICAgICAgICAgY29uc3QgeyBpZCwgYml0bWFwLCB3aWR0aCwgaGVpZ2h0LCBkeCwgZHksIGR3LCBkaCwgZGF0YVVSTE9wdGlvbnMgfSA9IGUuZGF0YTsNCiAgICAgICAgICAgICAgICBjb25zdCB0cmFuc3BhcmVudEJhc2U2NCA9IGdldFRyYW5zcGFyZW50QmxvYkZvcih3aWR0aCwgaGVpZ2h0LCBkYXRhVVJMT3B0aW9ucyk7DQogICAgICAgICAgICAgICAgY29uc3Qgb2Zmc2NyZWVuID0gbmV3IE9mZnNjcmVlbkNhbnZhcyh3aWR0aCwgaGVpZ2h0KTsNCiAgICAgICAgICAgICAgICBjb25zdCBjdHggPSBvZmZzY3JlZW4uZ2V0Q29udGV4dCgnMmQnKTsNCiAgICAgICAgICAgICAgICBjdHguZHJhd0ltYWdlKGJpdG1hcCwgMCwgMCwgd2lkdGgsIGhlaWdodCk7DQogICAgICAgICAgICAgICAgYml0bWFwLmNsb3NlKCk7DQogICAgICAgICAgICAgICAgY29uc3QgYmxvYiA9IHlpZWxkIG9mZnNjcmVlbi5jb252ZXJ0VG9CbG9iKGRhdGFVUkxPcHRpb25zKTsNCiAgICAgICAgICAgICAgICBjb25zdCB0eXBlID0gYmxvYi50eXBlOw0KICAgICAgICAgICAgICAgIGNvbnN0IGFycmF5QnVmZmVyID0geWllbGQgYmxvYi5hcnJheUJ1ZmZlcigpOw0KICAgICAgICAgICAgICAgIGNvbnN0IGJhc2U2NCA9IGVuY29kZShhcnJheUJ1ZmZlcik7DQogICAgICAgICAgICAgICAgaWYgKCFsYXN0QmxvYk1hcC5oYXMoaWQpICYmICh5aWVsZCB0cmFuc3BhcmVudEJhc2U2NCkgPT09IGJhc2U2NCkgew0KICAgICAgICAgICAgICAgICAgICBkZWJ1ZygnW2hpZ2hsaWdodC13b3JrZXJdIGNhbnZhcyBiaXRtYXAgaXMgdHJhbnNwYXJlbnQnLCB7DQogICAgICAgICAgICAgICAgICAgICAgICBpZCwNCiAgICAgICAgICAgICAgICAgICAgICAgIGJhc2U2NCwNCiAgICAgICAgICAgICAgICAgICAgfSk7DQogICAgICAgICAgICAgICAgICAgIGxhc3RCbG9iTWFwLnNldChpZCwgYmFzZTY0KTsNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkLCBzdGF0dXM6ICd0cmFuc3BhcmVudCcgfSk7DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGlmIChsYXN0QmxvYk1hcC5nZXQoaWQpID09PSBiYXNlNjQpIHsNCiAgICAgICAgICAgICAgICAgICAgZGVidWcoJ1toaWdobGlnaHQtd29ya2VyXSBjYW52YXMgYml0bWFwIGlzIHVuY2hhbmdlZCcsIHsNCiAgICAgICAgICAgICAgICAgICAgICAgIGlkLA0KICAgICAgICAgICAgICAgICAgICAgICAgYmFzZTY0LA0KICAgICAgICAgICAgICAgICAgICB9KTsNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkLCBzdGF0dXM6ICd1bmNoYW5nZWQnIH0pOw0KICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICBkZWJ1ZygnW2hpZ2hsaWdodC13b3JrZXJdIGNhbnZhcyBiaXRtYXAgcHJvY2Vzc2VkJywgew0KICAgICAgICAgICAgICAgICAgICBpZCwNCiAgICAgICAgICAgICAgICAgICAgYmFzZTY0LA0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgICAgIHdvcmtlci5wb3N0TWVzc2FnZSh7DQogICAgICAgICAgICAgICAgICAgIGlkLA0KICAgICAgICAgICAgICAgICAgICB0eXBlLA0KICAgICAgICAgICAgICAgICAgICBiYXNlNjQsDQogICAgICAgICAgICAgICAgICAgIHdpZHRoLA0KICAgICAgICAgICAgICAgICAgICBoZWlnaHQsDQogICAgICAgICAgICAgICAgICAgIGR4LA0KICAgICAgICAgICAgICAgICAgICBkeSwNCiAgICAgICAgICAgICAgICAgICAgZHcsDQogICAgICAgICAgICAgICAgICAgIGRoLA0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgICAgIGxhc3RCbG9iTWFwLnNldChpZCwgYmFzZTY0KTsNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsc2Ugew0KICAgICAgICAgICAgICAgIGRlYnVnKCdbaGlnaGxpZ2h0LXdvcmtlcl0gbm8gb2Zmc2NyZWVuY2FudmFzIHN1cHBvcnQnLCB7DQogICAgICAgICAgICAgICAgICAgIGlkOiBlLmRhdGEuaWQsDQogICAgICAgICAgICAgICAgfSk7DQogICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkOiBlLmRhdGEuaWQsIHN0YXR1czogJ3Vuc3VwcG9ydGVkJyB9KTsNCiAgICAgICAgICAgIH0NCiAgICAgICAgfSk7DQogICAgfTsKCn0pKCk7Cgo=", null, false);
+var WorkerFactory = createBase64WorkerFactory(
+  "Lyogcm9sbHVwLXBsdWdpbi13ZWItd29ya2VyLWxvYWRlciAqLwooZnVuY3Rpb24gKCkgewogICAgJ3VzZSBzdHJpY3QnOwoKICAgIC8qKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioNCiAgICBDb3B5cmlnaHQgKGMpIE1pY3Jvc29mdCBDb3Jwb3JhdGlvbi4NCg0KICAgIFBlcm1pc3Npb24gdG8gdXNlLCBjb3B5LCBtb2RpZnksIGFuZC9vciBkaXN0cmlidXRlIHRoaXMgc29mdHdhcmUgZm9yIGFueQ0KICAgIHB1cnBvc2Ugd2l0aCBvciB3aXRob3V0IGZlZSBpcyBoZXJlYnkgZ3JhbnRlZC4NCg0KICAgIFRIRSBTT0ZUV0FSRSBJUyBQUk9WSURFRCAiQVMgSVMiIEFORCBUSEUgQVVUSE9SIERJU0NMQUlNUyBBTEwgV0FSUkFOVElFUyBXSVRIDQogICAgUkVHQVJEIFRPIFRISVMgU09GVFdBUkUgSU5DTFVESU5HIEFMTCBJTVBMSUVEIFdBUlJBTlRJRVMgT0YgTUVSQ0hBTlRBQklMSVRZDQogICAgQU5EIEZJVE5FU1MuIElOIE5PIEVWRU5UIFNIQUxMIFRIRSBBVVRIT1IgQkUgTElBQkxFIEZPUiBBTlkgU1BFQ0lBTCwgRElSRUNULA0KICAgIElORElSRUNULCBPUiBDT05TRVFVRU5USUFMIERBTUFHRVMgT1IgQU5ZIERBTUFHRVMgV0hBVFNPRVZFUiBSRVNVTFRJTkcgRlJPTQ0KICAgIExPU1MgT0YgVVNFLCBEQVRBIE9SIFBST0ZJVFMsIFdIRVRIRVIgSU4gQU4gQUNUSU9OIE9GIENPTlRSQUNULCBORUdMSUdFTkNFIE9SDQogICAgT1RIRVIgVE9SVElPVVMgQUNUSU9OLCBBUklTSU5HIE9VVCBPRiBPUiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFVTRSBPUg0KICAgIFBFUkZPUk1BTkNFIE9GIFRISVMgU09GVFdBUkUuDQogICAgKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiogKi8NCg0KICAgIGZ1bmN0aW9uIF9fYXdhaXRlcih0aGlzQXJnLCBfYXJndW1lbnRzLCBQLCBnZW5lcmF0b3IpIHsNCiAgICAgICAgZnVuY3Rpb24gYWRvcHQodmFsdWUpIHsgcmV0dXJuIHZhbHVlIGluc3RhbmNlb2YgUCA/IHZhbHVlIDogbmV3IFAoZnVuY3Rpb24gKHJlc29sdmUpIHsgcmVzb2x2ZSh2YWx1ZSk7IH0pOyB9DQogICAgICAgIHJldHVybiBuZXcgKFAgfHwgKFAgPSBQcm9taXNlKSkoZnVuY3Rpb24gKHJlc29sdmUsIHJlamVjdCkgew0KICAgICAgICAgICAgZnVuY3Rpb24gZnVsZmlsbGVkKHZhbHVlKSB7IHRyeSB7IHN0ZXAoZ2VuZXJhdG9yLm5leHQodmFsdWUpKTsgfSBjYXRjaCAoZSkgeyByZWplY3QoZSk7IH0gfQ0KICAgICAgICAgICAgZnVuY3Rpb24gcmVqZWN0ZWQodmFsdWUpIHsgdHJ5IHsgc3RlcChnZW5lcmF0b3JbInRocm93Il0odmFsdWUpKTsgfSBjYXRjaCAoZSkgeyByZWplY3QoZSk7IH0gfQ0KICAgICAgICAgICAgZnVuY3Rpb24gc3RlcChyZXN1bHQpIHsgcmVzdWx0LmRvbmUgPyByZXNvbHZlKHJlc3VsdC52YWx1ZSkgOiBhZG9wdChyZXN1bHQudmFsdWUpLnRoZW4oZnVsZmlsbGVkLCByZWplY3RlZCk7IH0NCiAgICAgICAgICAgIHN0ZXAoKGdlbmVyYXRvciA9IGdlbmVyYXRvci5hcHBseSh0aGlzQXJnLCBfYXJndW1lbnRzIHx8IFtdKSkubmV4dCgpKTsNCiAgICAgICAgfSk7DQogICAgfQoKICAgIC8qCiAgICAgKiBiYXNlNjQtYXJyYXlidWZmZXIgMS4wLjEgPGh0dHBzOi8vZ2l0aHViLmNvbS9uaWtsYXN2aC9iYXNlNjQtYXJyYXlidWZmZXI+CiAgICAgKiBDb3B5cmlnaHQgKGMpIDIwMjEgTmlrbGFzIHZvbiBIZXJ0emVuIDxodHRwczovL2hlcnR6ZW4uY29tPgogICAgICogUmVsZWFzZWQgdW5kZXIgTUlUIExpY2Vuc2UKICAgICAqLwogICAgdmFyIGNoYXJzID0gJ0FCQ0RFRkdISUpLTE1OT1BRUlNUVVZXWFlaYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXowMTIzNDU2Nzg5Ky8nOwogICAgLy8gVXNlIGEgbG9va3VwIHRhYmxlIHRvIGZpbmQgdGhlIGluZGV4LgogICAgdmFyIGxvb2t1cCA9IHR5cGVvZiBVaW50OEFycmF5ID09PSAndW5kZWZpbmVkJyA/IFtdIDogbmV3IFVpbnQ4QXJyYXkoMjU2KTsKICAgIGZvciAodmFyIGkgPSAwOyBpIDwgY2hhcnMubGVuZ3RoOyBpKyspIHsKICAgICAgICBsb29rdXBbY2hhcnMuY2hhckNvZGVBdChpKV0gPSBpOwogICAgfQogICAgdmFyIGVuY29kZSA9IGZ1bmN0aW9uIChhcnJheWJ1ZmZlcikgewogICAgICAgIHZhciBieXRlcyA9IG5ldyBVaW50OEFycmF5KGFycmF5YnVmZmVyKSwgaSwgbGVuID0gYnl0ZXMubGVuZ3RoLCBiYXNlNjQgPSAnJzsKICAgICAgICBmb3IgKGkgPSAwOyBpIDwgbGVuOyBpICs9IDMpIHsKICAgICAgICAgICAgYmFzZTY0ICs9IGNoYXJzW2J5dGVzW2ldID4+IDJdOwogICAgICAgICAgICBiYXNlNjQgKz0gY2hhcnNbKChieXRlc1tpXSAmIDMpIDw8IDQpIHwgKGJ5dGVzW2kgKyAxXSA+PiA0KV07CiAgICAgICAgICAgIGJhc2U2NCArPSBjaGFyc1soKGJ5dGVzW2kgKyAxXSAmIDE1KSA8PCAyKSB8IChieXRlc1tpICsgMl0gPj4gNildOwogICAgICAgICAgICBiYXNlNjQgKz0gY2hhcnNbYnl0ZXNbaSArIDJdICYgNjNdOwogICAgICAgIH0KICAgICAgICBpZiAobGVuICUgMyA9PT0gMikgewogICAgICAgICAgICBiYXNlNjQgPSBiYXNlNjQuc3Vic3RyaW5nKDAsIGJhc2U2NC5sZW5ndGggLSAxKSArICc9JzsKICAgICAgICB9CiAgICAgICAgZWxzZSBpZiAobGVuICUgMyA9PT0gMSkgewogICAgICAgICAgICBiYXNlNjQgPSBiYXNlNjQuc3Vic3RyaW5nKDAsIGJhc2U2NC5sZW5ndGggLSAyKSArICc9PSc7CiAgICAgICAgfQogICAgICAgIHJldHVybiBiYXNlNjQ7CiAgICB9OwoKICAgIGNvbnN0IGxhc3RCbG9iTWFwID0gbmV3IE1hcCgpOw0KICAgIGNvbnN0IHRyYW5zcGFyZW50QmxvYk1hcCA9IG5ldyBNYXAoKTsNCiAgICBmdW5jdGlvbiBnZXRUcmFuc3BhcmVudEJsb2JGb3Iod2lkdGgsIGhlaWdodCwgZGF0YVVSTE9wdGlvbnMpIHsNCiAgICAgICAgcmV0dXJuIF9fYXdhaXRlcih0aGlzLCB2b2lkIDAsIHZvaWQgMCwgZnVuY3Rpb24qICgpIHsNCiAgICAgICAgICAgIGNvbnN0IGlkID0gYCR7d2lkdGh9LSR7aGVpZ2h0fWA7DQogICAgICAgICAgICBpZiAoJ09mZnNjcmVlbkNhbnZhcycgaW4gZ2xvYmFsVGhpcykgew0KICAgICAgICAgICAgICAgIGlmICh0cmFuc3BhcmVudEJsb2JNYXAuaGFzKGlkKSkNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHRyYW5zcGFyZW50QmxvYk1hcC5nZXQoaWQpOw0KICAgICAgICAgICAgICAgIGNvbnN0IG9mZnNjcmVlbiA9IG5ldyBPZmZzY3JlZW5DYW52YXMod2lkdGgsIGhlaWdodCk7DQogICAgICAgICAgICAgICAgb2Zmc2NyZWVuLmdldENvbnRleHQoJzJkJyk7DQogICAgICAgICAgICAgICAgY29uc3QgYmxvYiA9IHlpZWxkIG9mZnNjcmVlbi5jb252ZXJ0VG9CbG9iKGRhdGFVUkxPcHRpb25zKTsNCiAgICAgICAgICAgICAgICBjb25zdCBhcnJheUJ1ZmZlciA9IHlpZWxkIGJsb2IuYXJyYXlCdWZmZXIoKTsNCiAgICAgICAgICAgICAgICBjb25zdCBiYXNlNjQgPSBlbmNvZGUoYXJyYXlCdWZmZXIpOw0KICAgICAgICAgICAgICAgIHRyYW5zcGFyZW50QmxvYk1hcC5zZXQoaWQsIGJhc2U2NCk7DQogICAgICAgICAgICAgICAgcmV0dXJuIGJhc2U2NDsNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsc2Ugew0KICAgICAgICAgICAgICAgIHJldHVybiAnJzsNCiAgICAgICAgICAgIH0NCiAgICAgICAgfSk7DQogICAgfQ0KICAgIGNvbnN0IHdvcmtlciA9IHNlbGY7DQogICAgbGV0IGxvZ0RlYnVnID0gZmFsc2U7DQogICAgY29uc3QgZGVidWcgPSAoLi4uYXJncykgPT4gew0KICAgICAgICBpZiAobG9nRGVidWcpIHsNCiAgICAgICAgICAgIGNvbnNvbGUuZGVidWcoLi4uYXJncyk7DQogICAgICAgIH0NCiAgICB9Ow0KICAgIHdvcmtlci5vbm1lc3NhZ2UgPSBmdW5jdGlvbiAoZSkgew0KICAgICAgICByZXR1cm4gX19hd2FpdGVyKHRoaXMsIHZvaWQgMCwgdm9pZCAwLCBmdW5jdGlvbiogKCkgew0KICAgICAgICAgICAgbG9nRGVidWcgPSAhIWUuZGF0YS5sb2dEZWJ1ZzsNCiAgICAgICAgICAgIGlmICgnT2Zmc2NyZWVuQ2FudmFzJyBpbiBnbG9iYWxUaGlzKSB7DQogICAgICAgICAgICAgICAgY29uc3QgeyBpZCwgYml0bWFwLCB3aWR0aCwgaGVpZ2h0LCBkeCwgZHksIGR3LCBkaCwgZGF0YVVSTE9wdGlvbnMgfSA9IGUuZGF0YTsNCiAgICAgICAgICAgICAgICBjb25zdCB0cmFuc3BhcmVudEJhc2U2NCA9IGdldFRyYW5zcGFyZW50QmxvYkZvcih3aWR0aCwgaGVpZ2h0LCBkYXRhVVJMT3B0aW9ucyk7DQogICAgICAgICAgICAgICAgY29uc3Qgb2Zmc2NyZWVuID0gbmV3IE9mZnNjcmVlbkNhbnZhcyh3aWR0aCwgaGVpZ2h0KTsNCiAgICAgICAgICAgICAgICBjb25zdCBjdHggPSBvZmZzY3JlZW4uZ2V0Q29udGV4dCgnMmQnKTsNCiAgICAgICAgICAgICAgICBjdHguZHJhd0ltYWdlKGJpdG1hcCwgMCwgMCwgd2lkdGgsIGhlaWdodCk7DQogICAgICAgICAgICAgICAgYml0bWFwLmNsb3NlKCk7DQogICAgICAgICAgICAgICAgY29uc3QgYmxvYiA9IHlpZWxkIG9mZnNjcmVlbi5jb252ZXJ0VG9CbG9iKGRhdGFVUkxPcHRpb25zKTsNCiAgICAgICAgICAgICAgICBjb25zdCB0eXBlID0gYmxvYi50eXBlOw0KICAgICAgICAgICAgICAgIGNvbnN0IGFycmF5QnVmZmVyID0geWllbGQgYmxvYi5hcnJheUJ1ZmZlcigpOw0KICAgICAgICAgICAgICAgIGNvbnN0IGJhc2U2NCA9IGVuY29kZShhcnJheUJ1ZmZlcik7DQogICAgICAgICAgICAgICAgaWYgKCFsYXN0QmxvYk1hcC5oYXMoaWQpICYmICh5aWVsZCB0cmFuc3BhcmVudEJhc2U2NCkgPT09IGJhc2U2NCkgew0KICAgICAgICAgICAgICAgICAgICBkZWJ1ZygnW2hpZ2hsaWdodC13b3JrZXJdIGNhbnZhcyBiaXRtYXAgaXMgdHJhbnNwYXJlbnQnLCB7DQogICAgICAgICAgICAgICAgICAgICAgICBpZCwNCiAgICAgICAgICAgICAgICAgICAgICAgIGJhc2U2NCwNCiAgICAgICAgICAgICAgICAgICAgfSk7DQogICAgICAgICAgICAgICAgICAgIGxhc3RCbG9iTWFwLnNldChpZCwgYmFzZTY0KTsNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkLCBzdGF0dXM6ICd0cmFuc3BhcmVudCcgfSk7DQogICAgICAgICAgICAgICAgfQ0KICAgICAgICAgICAgICAgIGlmIChsYXN0QmxvYk1hcC5nZXQoaWQpID09PSBiYXNlNjQpIHsNCiAgICAgICAgICAgICAgICAgICAgZGVidWcoJ1toaWdobGlnaHQtd29ya2VyXSBjYW52YXMgYml0bWFwIGlzIHVuY2hhbmdlZCcsIHsNCiAgICAgICAgICAgICAgICAgICAgICAgIGlkLA0KICAgICAgICAgICAgICAgICAgICAgICAgYmFzZTY0LA0KICAgICAgICAgICAgICAgICAgICB9KTsNCiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkLCBzdGF0dXM6ICd1bmNoYW5nZWQnIH0pOw0KICAgICAgICAgICAgICAgIH0NCiAgICAgICAgICAgICAgICBkZWJ1ZygnW2hpZ2hsaWdodC13b3JrZXJdIGNhbnZhcyBiaXRtYXAgcHJvY2Vzc2VkJywgew0KICAgICAgICAgICAgICAgICAgICBpZCwNCiAgICAgICAgICAgICAgICAgICAgYmFzZTY0LA0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgICAgIHdvcmtlci5wb3N0TWVzc2FnZSh7DQogICAgICAgICAgICAgICAgICAgIGlkLA0KICAgICAgICAgICAgICAgICAgICB0eXBlLA0KICAgICAgICAgICAgICAgICAgICBiYXNlNjQsDQogICAgICAgICAgICAgICAgICAgIHdpZHRoLA0KICAgICAgICAgICAgICAgICAgICBoZWlnaHQsDQogICAgICAgICAgICAgICAgICAgIGR4LA0KICAgICAgICAgICAgICAgICAgICBkeSwNCiAgICAgICAgICAgICAgICAgICAgZHcsDQogICAgICAgICAgICAgICAgICAgIGRoLA0KICAgICAgICAgICAgICAgIH0pOw0KICAgICAgICAgICAgICAgIGxhc3RCbG9iTWFwLnNldChpZCwgYmFzZTY0KTsNCiAgICAgICAgICAgIH0NCiAgICAgICAgICAgIGVsc2Ugew0KICAgICAgICAgICAgICAgIGRlYnVnKCdbaGlnaGxpZ2h0LXdvcmtlcl0gbm8gb2Zmc2NyZWVuY2FudmFzIHN1cHBvcnQnLCB7DQogICAgICAgICAgICAgICAgICAgIGlkOiBlLmRhdGEuaWQsDQogICAgICAgICAgICAgICAgfSk7DQogICAgICAgICAgICAgICAgcmV0dXJuIHdvcmtlci5wb3N0TWVzc2FnZSh7IGlkOiBlLmRhdGEuaWQsIHN0YXR1czogJ3Vuc3VwcG9ydGVkJyB9KTsNCiAgICAgICAgICAgIH0NCiAgICAgICAgfSk7DQogICAgfTsKCn0pKCk7Cgo=",
+  null,
+  false
+);
 
 // ../rrweb/packages/rrweb/es/rrweb/rrweb/packages/rrweb/src/record/observers/canvas/canvas-manager.js
 var CanvasManager = class {
@@ -4294,10 +4634,16 @@ var CanvasManager = class {
         if (this.options.samplingManual === void 0 && this.options.clearWebGLBuffer !== false && ["webgl", "webgl2"].includes(element.__context)) {
           const context = element.getContext(element.__context);
           if (((_a2 = context === null || context === void 0 ? void 0 : context.getContextAttributes()) === null || _a2 === void 0 ? void 0 : _a2.preserveDrawingBuffer) === false) {
-            context === null || context === void 0 ? void 0 : context.clear(context === null || context === void 0 ? void 0 : context.COLOR_BUFFER_BIT);
-            this.debug(element, "cleared webgl canvas to load it into memory", {
-              attributes: context === null || context === void 0 ? void 0 : context.getContextAttributes()
-            });
+            context === null || context === void 0 ? void 0 : context.clear(
+              context === null || context === void 0 ? void 0 : context.COLOR_BUFFER_BIT
+            );
+            this.debug(
+              element,
+              "cleared webgl canvas to load it into memory",
+              {
+                attributes: context === null || context === void 0 ? void 0 : context.getContextAttributes()
+              }
+            );
           }
         }
         if (element.width === 0 || element.height === 0) {
@@ -4322,18 +4668,21 @@ var CanvasManager = class {
           width: bitmap.width,
           height: bitmap.height
         });
-        this.worker.postMessage({
-          id,
-          bitmap,
-          width,
-          height,
-          dx: 0,
-          dy: 0,
-          dw: element.width,
-          dh: element.height,
-          dataURLOptions: this.options.dataURLOptions,
-          logDebug: !!this.logger
-        }, [bitmap]);
+        this.worker.postMessage(
+          {
+            id,
+            bitmap,
+            width,
+            height,
+            dx: 0,
+            dy: 0,
+            dw: element.width,
+            dh: element.height,
+            dataURLOptions: this.options.dataURLOptions,
+            logDebug: !!this.logger
+          },
+          [bitmap]
+        );
         this.debug(element, "sent message");
       } catch (e2) {
         this.debug(element, "failed to snapshot", e2);
@@ -4341,7 +4690,16 @@ var CanvasManager = class {
         this.snapshotInProgressMap.set(id, false);
       }
     });
-    const { sampling, win, blockClass, blockSelector, recordCanvas, recordVideos, initialSnapshotDelay, dataURLOptions } = options;
+    const {
+      sampling,
+      win,
+      blockClass,
+      blockSelector,
+      recordCanvas,
+      recordVideos,
+      initialSnapshotDelay,
+      dataURLOptions
+    } = options;
     this.mutationCb = options.mutationCb;
     this.mirror = options.mirror;
     this.logger = options.logger;
@@ -4393,10 +4751,19 @@ var CanvasManager = class {
       this.initCanvasMutationObserver(win, blockClass, blockSelector);
     } else if (recordCanvas && typeof sampling === "number") {
       this.debug(null, "initializing canvas fps observer", { sampling });
-      this.initCanvasFPSObserver(recordVideos, sampling, win, blockClass, blockSelector, {
-        initialSnapshotDelay,
-        dataURLOptions
-      }, options.resizeFactor, options.maxSnapshotDimension);
+      this.initCanvasFPSObserver(
+        recordVideos,
+        sampling,
+        win,
+        blockClass,
+        blockSelector,
+        {
+          initialSnapshotDelay,
+          dataURLOptions
+        },
+        options.resizeFactor,
+        options.maxSnapshotDimension
+      );
     }
   }
   debug(element, ...args) {
@@ -4413,7 +4780,11 @@ var CanvasManager = class {
     this.logger.debug(prefix, element, ...args);
   }
   initCanvasFPSObserver(recordVideos, fps, win, blockClass, blockSelector, options, resizeFactor, maxSnapshotDimension) {
-    const canvasContextReset = initCanvasContextObserver(win, blockClass, blockSelector);
+    const canvasContextReset = initCanvasContextObserver(
+      win,
+      blockClass,
+      blockSelector
+    );
     const timeBetweenSnapshots = 1e3 / fps;
     let lastSnapshotTime = 0;
     let rafId;
@@ -4467,70 +4838,83 @@ var CanvasManager = class {
         return hadLoadingTime;
       };
       const promises = [];
-      promises.push(...getCanvas(timestamp).filter(filterElementStartTime).map(this.snapshot));
-      promises.push(...getVideos(timestamp).filter(filterElementStartTime).map((video) => __awaiter(this, void 0, void 0, function* () {
-        this.debug(video, "starting video snapshotting");
-        const id = this.mirror.getId(video);
-        if (this.snapshotInProgressMap.get(id)) {
-          this.debug(video, "video snapshotting already in progress for", id);
-          return;
-        }
-        this.snapshotInProgressMap.set(id, true);
-        try {
-          const { width: boxWidth, height: boxHeight } = video.getBoundingClientRect();
-          const { actualWidth, actualHeight } = {
-            actualWidth: video.videoWidth,
-            actualHeight: video.videoHeight
-          };
-          const maxDim = Math.max(actualWidth, actualHeight);
-          let scale = resizeFactor || 1;
-          if (maxSnapshotDimension) {
-            scale = Math.min(scale, maxSnapshotDimension / maxDim);
-          }
-          const width = actualWidth * scale;
-          const height = actualHeight * scale;
-          const bitmap = yield createImageBitmap(video, {
-            resizeWidth: width,
-            resizeHeight: height
-          });
-          let outputScale = Math.max(boxWidth, boxHeight) / maxDim;
-          const outputWidth = actualWidth * outputScale;
-          const outputHeight = actualHeight * outputScale;
-          const offsetX = (boxWidth - outputWidth) / 2;
-          const offsetY = (boxHeight - outputHeight) / 2;
-          this.debug(video, "created image bitmap", {
-            actualWidth,
-            actualHeight,
-            boxWidth,
-            boxHeight,
-            outputWidth,
-            outputHeight,
-            resizeWidth: width,
-            resizeHeight: height,
-            scale,
-            outputScale,
-            offsetX,
-            offsetY
-          });
-          this.worker.postMessage({
-            id,
-            bitmap,
-            width,
-            height,
-            dx: offsetX,
-            dy: offsetY,
-            dw: outputWidth,
-            dh: outputHeight,
-            dataURLOptions: options.dataURLOptions,
-            logDebug: !!this.logger
-          }, [bitmap]);
-          this.debug(video, "send message");
-        } catch (e2) {
-          this.debug(video, "failed to snapshot", e2);
-        } finally {
-          this.snapshotInProgressMap.set(id, false);
-        }
-      })));
+      promises.push(
+        ...getCanvas(timestamp).filter(filterElementStartTime).map(this.snapshot)
+      );
+      promises.push(
+        ...getVideos(timestamp).filter(filterElementStartTime).map(
+          (video) => __awaiter(this, void 0, void 0, function* () {
+            this.debug(video, "starting video snapshotting");
+            const id = this.mirror.getId(video);
+            if (this.snapshotInProgressMap.get(id)) {
+              this.debug(
+                video,
+                "video snapshotting already in progress for",
+                id
+              );
+              return;
+            }
+            this.snapshotInProgressMap.set(id, true);
+            try {
+              const { width: boxWidth, height: boxHeight } = video.getBoundingClientRect();
+              const { actualWidth, actualHeight } = {
+                actualWidth: video.videoWidth,
+                actualHeight: video.videoHeight
+              };
+              const maxDim = Math.max(actualWidth, actualHeight);
+              let scale = resizeFactor || 1;
+              if (maxSnapshotDimension) {
+                scale = Math.min(scale, maxSnapshotDimension / maxDim);
+              }
+              const width = actualWidth * scale;
+              const height = actualHeight * scale;
+              const bitmap = yield createImageBitmap(video, {
+                resizeWidth: width,
+                resizeHeight: height
+              });
+              let outputScale = Math.max(boxWidth, boxHeight) / maxDim;
+              const outputWidth = actualWidth * outputScale;
+              const outputHeight = actualHeight * outputScale;
+              const offsetX = (boxWidth - outputWidth) / 2;
+              const offsetY = (boxHeight - outputHeight) / 2;
+              this.debug(video, "created image bitmap", {
+                actualWidth,
+                actualHeight,
+                boxWidth,
+                boxHeight,
+                outputWidth,
+                outputHeight,
+                resizeWidth: width,
+                resizeHeight: height,
+                scale,
+                outputScale,
+                offsetX,
+                offsetY
+              });
+              this.worker.postMessage(
+                {
+                  id,
+                  bitmap,
+                  width,
+                  height,
+                  dx: offsetX,
+                  dy: offsetY,
+                  dw: outputWidth,
+                  dh: outputHeight,
+                  dataURLOptions: options.dataURLOptions,
+                  logDebug: !!this.logger
+                },
+                [bitmap]
+              );
+              this.debug(video, "send message");
+            } catch (e2) {
+              this.debug(video, "failed to snapshot", e2);
+            } finally {
+              this.snapshotInProgressMap.set(id, false);
+            }
+          })
+        )
+      );
       yield Promise.all(promises).catch(console.error);
       rafId = requestAnimationFrame(takeSnapshots);
     });
@@ -4545,9 +4929,24 @@ var CanvasManager = class {
   initCanvasMutationObserver(win, blockClass, blockSelector) {
     this.startRAFTimestamping();
     this.startPendingCanvasMutationFlusher();
-    const canvasContextReset = initCanvasContextObserver(win, blockClass, blockSelector);
-    const canvas2DReset = initCanvas2DMutationObserver(this.processMutation.bind(this), win, blockClass, blockSelector);
-    const canvasWebGL1and2Reset = initCanvasWebGLMutationObserver(this.processMutation.bind(this), win, blockClass, blockSelector, this.mirror);
+    const canvasContextReset = initCanvasContextObserver(
+      win,
+      blockClass,
+      blockSelector
+    );
+    const canvas2DReset = initCanvas2DMutationObserver(
+      this.processMutation.bind(this),
+      win,
+      blockClass,
+      blockSelector
+    );
+    const canvasWebGL1and2Reset = initCanvasWebGLMutationObserver(
+      this.processMutation.bind(this),
+      win,
+      blockClass,
+      blockSelector,
+      this.mirror
+    );
     this.resetObservers = () => {
       canvasContextReset();
       canvas2DReset();
@@ -4695,8 +5094,42 @@ var recording = false;
 var mirror = createMirror();
 function record(options = {}) {
   var _a2, _b2, _c, _d, _e, _f, _g, _h;
-  const { emit, checkoutEveryNms, checkoutEveryNth, blockClass = "highlight-block", blockSelector = null, ignoreClass = "highlight-ignore", maskTextClass = "highlight-mask", maskTextSelector = null, inlineStylesheet = true, maskAllInputs, maskInputOptions: _maskInputOptions, slimDOMOptions: _slimDOMOptions, maskInputFn, maskTextFn = obfuscateText, hooks, packFn, sampling = {}, mousemoveWait, recordCanvas = false, recordCrossOriginIframes = false, recordAfter = options.recordAfter === "DOMContentLoaded" ? options.recordAfter : "load", userTriggeredOnInput = false, collectFonts = false, inlineImages = false, plugins, keepIframeSrcFn = () => false, privacySetting = "default", ignoreCSSAttributes = /* @__PURE__ */ new Set([]), errorHandler: errorHandler2, logger } = options;
-  const dataURLOptions = Object.assign(Object.assign({}, options.dataURLOptions), (_b2 = (_a2 = options.sampling) === null || _a2 === void 0 ? void 0 : _a2.canvas) === null || _b2 === void 0 ? void 0 : _b2.dataURLOptions);
+  const {
+    emit,
+    checkoutEveryNms,
+    checkoutEveryNth,
+    blockClass = "highlight-block",
+    blockSelector = null,
+    ignoreClass = "highlight-ignore",
+    maskTextClass = "highlight-mask",
+    maskTextSelector = null,
+    inlineStylesheet = true,
+    maskAllInputs,
+    maskInputOptions: _maskInputOptions,
+    slimDOMOptions: _slimDOMOptions,
+    maskInputFn,
+    maskTextFn = obfuscateText,
+    hooks,
+    packFn,
+    sampling = {},
+    mousemoveWait,
+    recordCanvas = false,
+    recordCrossOriginIframes = false,
+    recordAfter = options.recordAfter === "DOMContentLoaded" ? options.recordAfter : "load",
+    userTriggeredOnInput = false,
+    collectFonts = false,
+    inlineImages = false,
+    plugins,
+    keepIframeSrcFn = () => false,
+    privacySetting = "default",
+    ignoreCSSAttributes = /* @__PURE__ */ new Set([]),
+    errorHandler: errorHandler2,
+    logger
+  } = options;
+  const dataURLOptions = Object.assign(
+    Object.assign({}, options.dataURLOptions),
+    (_b2 = (_a2 = options.sampling) === null || _a2 === void 0 ? void 0 : _a2.canvas) === null || _b2 === void 0 ? void 0 : _b2.dataURLOptions
+  );
   registerErrorHandler(errorHandler2);
   const inEmittingFrame = recordCrossOriginIframes ? window.parent === window : true;
   let passEmitsToParent = false;
@@ -4792,23 +5225,31 @@ function record(options = {}) {
     }
   };
   const wrappedMutationEmit = (m) => {
-    wrappedEmit(wrapEvent({
-      type: EventType.IncrementalSnapshot,
-      data: Object.assign({ source: IncrementalSource.Mutation }, m)
-    }));
+    wrappedEmit(
+      wrapEvent({
+        type: EventType.IncrementalSnapshot,
+        data: Object.assign({ source: IncrementalSource.Mutation }, m)
+      })
+    );
   };
-  const wrappedScrollEmit = (p) => wrappedEmit(wrapEvent({
-    type: EventType.IncrementalSnapshot,
-    data: Object.assign({ source: IncrementalSource.Scroll }, p)
-  }));
-  const wrappedCanvasMutationEmit = (p) => wrappedEmit(wrapEvent({
-    type: EventType.IncrementalSnapshot,
-    data: Object.assign({ source: IncrementalSource.CanvasMutation }, p)
-  }));
-  const wrappedAdoptedStyleSheetEmit = (a2) => wrappedEmit(wrapEvent({
-    type: EventType.IncrementalSnapshot,
-    data: Object.assign({ source: IncrementalSource.AdoptedStyleSheet }, a2)
-  }));
+  const wrappedScrollEmit = (p) => wrappedEmit(
+    wrapEvent({
+      type: EventType.IncrementalSnapshot,
+      data: Object.assign({ source: IncrementalSource.Scroll }, p)
+    })
+  );
+  const wrappedCanvasMutationEmit = (p) => wrappedEmit(
+    wrapEvent({
+      type: EventType.IncrementalSnapshot,
+      data: Object.assign({ source: IncrementalSource.CanvasMutation }, p)
+    })
+  );
+  const wrappedAdoptedStyleSheetEmit = (a2) => wrappedEmit(
+    wrapEvent({
+      type: EventType.IncrementalSnapshot,
+      data: Object.assign({ source: IncrementalSource.AdoptedStyleSheet }, a2)
+    })
+  );
   const stylesheetManager = new StylesheetManager({
     mutationCb: wrappedMutationEmit,
     adoptedStyleSheetCb: wrappedAdoptedStyleSheetEmit
@@ -4873,14 +5314,17 @@ function record(options = {}) {
     mirror
   });
   takeFullSnapshot = (isCheckout = false) => {
-    wrappedEmit(wrapEvent({
-      type: EventType.Meta,
-      data: {
-        href: window.location.href,
-        width: getWindowWidth(),
-        height: getWindowHeight()
-      }
-    }), isCheckout);
+    wrappedEmit(
+      wrapEvent({
+        type: EventType.Meta,
+        data: {
+          href: window.location.href,
+          width: getWindowWidth(),
+          height: getWindowHeight()
+        }
+      }),
+      isCheckout
+    );
     stylesheetManager.reset();
     shadowDomManager.init();
     mutationBuffers.forEach((buf) => buf.lock());
@@ -4921,104 +5365,148 @@ function record(options = {}) {
     if (!node) {
       return console.warn("Failed to snapshot the document");
     }
-    wrappedEmit(wrapEvent({
-      type: EventType.FullSnapshot,
-      data: {
-        node,
-        initialOffset: getWindowScroll(window)
-      }
-    }), isCheckout);
+    wrappedEmit(
+      wrapEvent({
+        type: EventType.FullSnapshot,
+        data: {
+          node,
+          initialOffset: getWindowScroll(window)
+        }
+      }),
+      isCheckout
+    );
     mutationBuffers.forEach((buf) => buf.unlock());
     if (document.adoptedStyleSheets && document.adoptedStyleSheets.length > 0)
-      stylesheetManager.adoptStyleSheets(document.adoptedStyleSheets, mirror.getId(document));
+      stylesheetManager.adoptStyleSheets(
+        document.adoptedStyleSheets,
+        mirror.getId(document)
+      );
   };
   try {
     const handlers = [];
     const observe = (doc) => {
       var _a3;
-      return callbackWrapper(initObservers)({
-        mutationCb: wrappedMutationEmit,
-        mousemoveCb: (positions, source) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: {
-            source,
-            positions
-          }
-        })),
-        mouseInteractionCb: (d) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.MouseInteraction }, d)
-        })),
-        scrollCb: wrappedScrollEmit,
-        viewportResizeCb: (d) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.ViewportResize }, d)
-        })),
-        inputCb: (v2) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.Input }, v2)
-        })),
-        mediaInteractionCb: (p) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.MediaInteraction }, p)
-        })),
-        styleSheetRuleCb: (r2) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.StyleSheetRule }, r2)
-        })),
-        styleDeclarationCb: (r2) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.StyleDeclaration }, r2)
-        })),
-        canvasMutationCb: wrappedCanvasMutationEmit,
-        fontCb: (p) => wrappedEmit(wrapEvent({
-          type: EventType.IncrementalSnapshot,
-          data: Object.assign({ source: IncrementalSource.Font }, p)
-        })),
-        selectionCb: (p) => {
-          wrappedEmit(wrapEvent({
-            type: EventType.IncrementalSnapshot,
-            data: Object.assign({ source: IncrementalSource.Selection }, p)
-          }));
+      return callbackWrapper(initObservers)(
+        {
+          mutationCb: wrappedMutationEmit,
+          mousemoveCb: (positions, source) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: {
+                source,
+                positions
+              }
+            })
+          ),
+          mouseInteractionCb: (d) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign(
+                { source: IncrementalSource.MouseInteraction },
+                d
+              )
+            })
+          ),
+          scrollCb: wrappedScrollEmit,
+          viewportResizeCb: (d) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign(
+                { source: IncrementalSource.ViewportResize },
+                d
+              )
+            })
+          ),
+          inputCb: (v2) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign({ source: IncrementalSource.Input }, v2)
+            })
+          ),
+          mediaInteractionCb: (p) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign(
+                { source: IncrementalSource.MediaInteraction },
+                p
+              )
+            })
+          ),
+          styleSheetRuleCb: (r2) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign(
+                { source: IncrementalSource.StyleSheetRule },
+                r2
+              )
+            })
+          ),
+          styleDeclarationCb: (r2) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign(
+                { source: IncrementalSource.StyleDeclaration },
+                r2
+              )
+            })
+          ),
+          canvasMutationCb: wrappedCanvasMutationEmit,
+          fontCb: (p) => wrappedEmit(
+            wrapEvent({
+              type: EventType.IncrementalSnapshot,
+              data: Object.assign({ source: IncrementalSource.Font }, p)
+            })
+          ),
+          selectionCb: (p) => {
+            wrappedEmit(
+              wrapEvent({
+                type: EventType.IncrementalSnapshot,
+                data: Object.assign({ source: IncrementalSource.Selection }, p)
+              })
+            );
+          },
+          blockClass,
+          ignoreClass,
+          maskTextClass,
+          maskTextSelector,
+          maskInputOptions,
+          inlineStylesheet,
+          sampling,
+          recordCanvas,
+          inlineImages,
+          userTriggeredOnInput,
+          collectFonts,
+          doc,
+          maskInputFn,
+          maskTextFn,
+          keepIframeSrcFn,
+          blockSelector,
+          slimDOMOptions,
+          dataURLOptions,
+          mirror,
+          iframeManager,
+          stylesheetManager,
+          shadowDomManager,
+          processedNodeManager,
+          canvasManager,
+          ignoreCSSAttributes,
+          privacySetting,
+          plugins: ((_a3 = plugins === null || plugins === void 0 ? void 0 : plugins.filter((p) => p.observer)) === null || _a3 === void 0 ? void 0 : _a3.map((p) => ({
+            observer: p.observer,
+            options: p.options,
+            callback: (payload) => wrappedEmit(
+              wrapEvent({
+                type: EventType.Plugin,
+                data: {
+                  plugin: p.name,
+                  payload
+                }
+              })
+            )
+          }))) || []
         },
-        blockClass,
-        ignoreClass,
-        maskTextClass,
-        maskTextSelector,
-        maskInputOptions,
-        inlineStylesheet,
-        sampling,
-        recordCanvas,
-        inlineImages,
-        userTriggeredOnInput,
-        collectFonts,
-        doc,
-        maskInputFn,
-        maskTextFn,
-        keepIframeSrcFn,
-        blockSelector,
-        slimDOMOptions,
-        dataURLOptions,
-        mirror,
-        iframeManager,
-        stylesheetManager,
-        shadowDomManager,
-        processedNodeManager,
-        canvasManager,
-        ignoreCSSAttributes,
-        privacySetting,
-        plugins: ((_a3 = plugins === null || plugins === void 0 ? void 0 : plugins.filter((p) => p.observer)) === null || _a3 === void 0 ? void 0 : _a3.map((p) => ({
-          observer: p.observer,
-          options: p.options,
-          callback: (payload) => wrappedEmit(wrapEvent({
-            type: EventType.Plugin,
-            data: {
-              plugin: p.name,
-              payload
-            }
-          }))
-        }))) || []
-      }, hooks);
+        hooks
+      );
     };
     iframeManager.addLoadListener((iframeEl) => {
       try {
@@ -5035,22 +5523,34 @@ function record(options = {}) {
     if (document.readyState === "interactive" || document.readyState === "complete") {
       init();
     } else {
-      handlers.push(on("DOMContentLoaded", () => {
-        wrappedEmit(wrapEvent({
-          type: EventType.DomContentLoaded,
-          data: {}
-        }));
-        if (recordAfter === "DOMContentLoaded")
-          init();
-      }));
-      handlers.push(on("load", () => {
-        wrappedEmit(wrapEvent({
-          type: EventType.Load,
-          data: {}
-        }));
-        if (recordAfter === "load")
-          init();
-      }, window));
+      handlers.push(
+        on("DOMContentLoaded", () => {
+          wrappedEmit(
+            wrapEvent({
+              type: EventType.DomContentLoaded,
+              data: {}
+            })
+          );
+          if (recordAfter === "DOMContentLoaded")
+            init();
+        })
+      );
+      handlers.push(
+        on(
+          "load",
+          () => {
+            wrappedEmit(
+              wrapEvent({
+                type: EventType.Load,
+                data: {}
+              })
+            );
+            if (recordAfter === "load")
+              init();
+          },
+          window
+        )
+      );
     }
     return () => {
       handlers.forEach((h) => h());
@@ -5066,13 +5566,15 @@ record.addCustomEvent = (tag, payload) => {
   if (!recording) {
     return;
   }
-  wrappedEmit(wrapEvent({
-    type: EventType.Custom,
-    data: {
-      tag,
-      payload
-    }
-  }));
+  wrappedEmit(
+    wrapEvent({
+      type: EventType.Custom,
+      data: {
+        tag,
+        payload
+      }
+    })
+  );
 };
 record.freezePage = () => {
   mutationBuffers.forEach((buf) => buf.freeze());
@@ -5231,13 +5733,19 @@ var BaseRRNode = class _BaseRRNode {
     return false;
   }
   appendChild(_newChild) {
-    throw new Error(`RRDomException: Failed to execute 'appendChild' on 'RRNode': This RRNode type does not support this method.`);
+    throw new Error(
+      `RRDomException: Failed to execute 'appendChild' on 'RRNode': This RRNode type does not support this method.`
+    );
   }
   insertBefore(_newChild, _refChild) {
-    throw new Error(`RRDomException: Failed to execute 'insertBefore' on 'RRNode': This RRNode type does not support this method.`);
+    throw new Error(
+      `RRDomException: Failed to execute 'insertBefore' on 'RRNode': This RRNode type does not support this method.`
+    );
   }
   removeChild(_node) {
-    throw new Error(`RRDomException: Failed to execute 'removeChild' on 'RRNode': This RRNode type does not support this method.`);
+    throw new Error(
+      `RRDomException: Failed to execute 'removeChild' on 'RRNode': This RRNode type does not support this method.`
+    );
   }
   toString() {
     return "RRNode";
@@ -5255,15 +5763,21 @@ function BaseRRDocumentImpl(RRNodeClass) {
       this.ownerDocument = this;
     }
     get documentElement() {
-      return this.childNodes.find((node) => node.RRNodeType === NodeType$1.Element && node.tagName === "HTML") || null;
+      return this.childNodes.find(
+        (node) => node.RRNodeType === NodeType$1.Element && node.tagName === "HTML"
+      ) || null;
     }
     get body() {
       var _a2;
-      return ((_a2 = this.documentElement) === null || _a2 === void 0 ? void 0 : _a2.childNodes.find((node) => node.RRNodeType === NodeType$1.Element && node.tagName === "BODY")) || null;
+      return ((_a2 = this.documentElement) === null || _a2 === void 0 ? void 0 : _a2.childNodes.find(
+        (node) => node.RRNodeType === NodeType$1.Element && node.tagName === "BODY"
+      )) || null;
     }
     get head() {
       var _a2;
-      return ((_a2 = this.documentElement) === null || _a2 === void 0 ? void 0 : _a2.childNodes.find((node) => node.RRNodeType === NodeType$1.Element && node.tagName === "HEAD")) || null;
+      return ((_a2 = this.documentElement) === null || _a2 === void 0 ? void 0 : _a2.childNodes.find(
+        (node) => node.RRNodeType === NodeType$1.Element && node.tagName === "HEAD"
+      )) || null;
     }
     get implementation() {
       return this;
@@ -5275,7 +5789,9 @@ function BaseRRDocumentImpl(RRNodeClass) {
       const nodeType = newChild.RRNodeType;
       if (nodeType === NodeType$1.Element || nodeType === NodeType$1.DocumentType) {
         if (this.childNodes.some((s2) => s2.RRNodeType === nodeType)) {
-          throw new Error(`RRDomException: Failed to execute 'appendChild' on 'RRNode': Only one ${nodeType === NodeType$1.Element ? "RRElement" : "RRDoctype"} on RRDocument allowed.`);
+          throw new Error(
+            `RRDomException: Failed to execute 'appendChild' on 'RRNode': Only one ${nodeType === NodeType$1.Element ? "RRElement" : "RRDoctype"} on RRDocument allowed.`
+          );
         }
       }
       const child = appendChild(this, newChild);
@@ -5286,7 +5802,9 @@ function BaseRRDocumentImpl(RRNodeClass) {
       const nodeType = newChild.RRNodeType;
       if (nodeType === NodeType$1.Element || nodeType === NodeType$1.DocumentType) {
         if (this.childNodes.some((s2) => s2.RRNodeType === nodeType)) {
-          throw new Error(`RRDomException: Failed to execute 'insertBefore' on 'RRNode': Only one ${nodeType === NodeType$1.Element ? "RRElement" : "RRDoctype"} on RRDocument allowed.`);
+          throw new Error(
+            `RRDomException: Failed to execute 'insertBefore' on 'RRNode': Only one ${nodeType === NodeType$1.Element ? "RRElement" : "RRDoctype"} on RRDocument allowed.`
+          );
         }
       }
       const child = insertBefore(this, newChild, refChild);
@@ -5318,7 +5836,11 @@ function BaseRRDocumentImpl(RRNodeClass) {
       return new BaseRRDocument();
     }
     createDocumentType(qualifiedName, publicId, systemId) {
-      const doctype = new (BaseRRDocumentTypeImpl(BaseRRNode))(qualifiedName, publicId, systemId);
+      const doctype = new (BaseRRDocumentTypeImpl(BaseRRNode))(
+        qualifiedName,
+        publicId,
+        systemId
+      );
       doctype.ownerDocument = this;
       return doctype;
     }
@@ -5466,7 +5988,9 @@ function BaseRRElementImpl(RRNodeClass) {
 function BaseRRMediaElementImpl(RRElementClass) {
   return class BaseRRMediaElement extends RRElementClass {
     attachShadow(_init) {
-      throw new Error(`RRDomException: Failed to execute 'attachShadow' on 'RRElement': This RRElement does not support attachShadow`);
+      throw new Error(
+        `RRDomException: Failed to execute 'attachShadow' on 'RRElement': This RRElement does not support attachShadow`
+      );
     }
     play() {
       this.paused = false;
@@ -5549,7 +6073,9 @@ var ClassList = class {
       this.onChange && this.onChange(this.classes.join(" "));
     };
     this.remove = (...classNames) => {
-      this.classes = this.classes.filter((item) => classNames.indexOf(item) === -1);
+      this.classes = this.classes.filter(
+        (item) => classNames.indexOf(item) === -1
+      );
       this.onChange && this.onChange(this.classes.join(" "));
     };
     if (classText) {
@@ -5580,7 +6106,9 @@ function insertBefore(parent, newChild, refChild) {
   if (!refChild)
     return appendChild(parent, newChild);
   if (refChild.parentNode !== parent)
-    throw new Error("Failed to execute 'insertBefore' on 'RRNode': The RRNode before which the new node is to be inserted is not a child of this RRNode.");
+    throw new Error(
+      "Failed to execute 'insertBefore' on 'RRNode': The RRNode before which the new node is to be inserted is not a child of this RRNode."
+    );
   if (newChild === refChild)
     return newChild;
   if (newChild.parentNode)
@@ -5599,7 +6127,9 @@ function insertBefore(parent, newChild, refChild) {
 }
 function removeChild(parent, child) {
   if (child.parentNode !== parent)
-    throw new Error("Failed to execute 'removeChild' on 'RRNode': The RRNode to be removed is not a child of this RRNode.");
+    throw new Error(
+      "Failed to execute 'removeChild' on 'RRNode': The RRNode to be removed is not a child of this RRNode."
+    );
   if (child.previousSibling)
     child.previousSibling.nextSibling = child.nextSibling;
   else
@@ -5674,11 +6204,22 @@ var SVGTagMap = {
 };
 var createdNodeSet = null;
 function diff(oldTree, newTree, replayer, rrnodeMirror = newTree.mirror || newTree.ownerDocument.mirror) {
-  oldTree = diffBeforeUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror);
+  oldTree = diffBeforeUpdatingChildren(
+    oldTree,
+    newTree,
+    replayer,
+    rrnodeMirror
+  );
   const oldChildren = oldTree.childNodes;
   const newChildren = newTree.childNodes;
   if (oldChildren.length > 0 || newChildren.length > 0) {
-    diffChildren(Array.from(oldChildren), newChildren, oldTree, replayer, rrnodeMirror);
+    diffChildren(
+      Array.from(oldChildren),
+      newChildren,
+      oldTree,
+      replayer,
+      rrnodeMirror
+    );
   }
   diffAfterUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror);
 }
@@ -5691,7 +6232,11 @@ function diffBeforeUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror) {
     }, 0);
   }
   if (!sameNodeType(oldTree, newTree)) {
-    const calibratedOldTree = createOrGetNode(newTree, replayer.mirror, rrnodeMirror);
+    const calibratedOldTree = createOrGetNode(
+      newTree,
+      replayer.mirror,
+      rrnodeMirror
+    );
     (_a2 = oldTree.parentNode) === null || _a2 === void 0 ? void 0 : _a2.replaceChild(calibratedOldTree, oldTree);
     oldTree = calibratedOldTree;
   }
@@ -5717,7 +6262,12 @@ function diffBeforeUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror) {
           const oldContentDocument = oldTree.contentDocument;
           if (!oldContentDocument)
             break;
-          diff(oldContentDocument, newTree.contentDocument, replayer, rrnodeMirror);
+          diff(
+            oldContentDocument,
+            newTree.contentDocument,
+            replayer,
+            rrnodeMirror
+          );
           break;
         }
       }
@@ -5727,7 +6277,13 @@ function diffBeforeUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror) {
         const oldChildren = oldElement.shadowRoot.childNodes;
         const newChildren = newRRElement.shadowRoot.childNodes;
         if (oldChildren.length > 0 || newChildren.length > 0)
-          diffChildren(Array.from(oldChildren), newChildren, oldElement.shadowRoot, replayer, rrnodeMirror);
+          diffChildren(
+            Array.from(oldChildren),
+            newChildren,
+            oldElement.shadowRoot,
+            replayer,
+            rrnodeMirror
+          );
       }
       break;
     }
@@ -5777,12 +6333,20 @@ function diffAfterUpdatingChildren(oldTree, newTree, replayer, rrnodeMirror) {
             };
             image.src = rrCanvasElement.rr_dataURL;
           }
-          rrCanvasElement.canvasMutations.forEach((canvasMutation3) => replayer.applyCanvas(canvasMutation3.event, canvasMutation3.mutation, oldTree));
+          rrCanvasElement.canvasMutations.forEach(
+            (canvasMutation3) => replayer.applyCanvas(
+              canvasMutation3.event,
+              canvasMutation3.mutation,
+              oldTree
+            )
+          );
           break;
         }
         case "STYLE": {
           const styleSheet = oldElement.sheet;
-          styleSheet && newTree.rules.forEach((data) => replayer.applyStyleSheetMutation(data, styleSheet));
+          styleSheet && newTree.rules.forEach(
+            (data) => replayer.applyStyleSheetMutation(data, styleSheet)
+          );
           break;
         }
       }
@@ -5882,7 +6446,11 @@ function diffChildren(oldChildren, newChildren, parentNode, replayer, rrnodeMirr
         diff(nodeToMove, newStartNode, replayer, rrnodeMirror);
         oldChildren[indexInOld] = void 0;
       } else {
-        const newNode = createOrGetNode(newStartNode, replayer.mirror, rrnodeMirror);
+        const newNode = createOrGetNode(
+          newStartNode,
+          replayer.mirror,
+          rrnodeMirror
+        );
         if (parentNode.nodeName === "#document" && oldStartNode && (newNode.nodeType === newNode.DOCUMENT_TYPE_NODE && oldStartNode.nodeType === oldStartNode.DOCUMENT_TYPE_NODE || newNode.nodeType === newNode.ELEMENT_NODE && oldStartNode.nodeType === oldStartNode.ELEMENT_NODE)) {
           parentNode.removeChild(oldStartNode);
           replayer.mirror.removeNodeFromMap(oldStartNode);
@@ -5902,9 +6470,15 @@ function diffChildren(oldChildren, newChildren, parentNode, replayer, rrnodeMirr
     const referenceRRNode = newChildren[newEndIndex + 1];
     let referenceNode = null;
     if (referenceRRNode)
-      referenceNode = replayer.mirror.getNode(rrnodeMirror.getId(referenceRRNode));
+      referenceNode = replayer.mirror.getNode(
+        rrnodeMirror.getId(referenceRRNode)
+      );
     for (; newStartIndex <= newEndIndex; ++newStartIndex) {
-      const newNode = createOrGetNode(newChildren[newStartIndex], replayer.mirror, rrnodeMirror);
+      const newNode = createOrGetNode(
+        newChildren[newStartIndex],
+        replayer.mirror,
+        rrnodeMirror
+      );
       try {
         parentNode.insertBefore(newNode, referenceNode);
         diff(newNode, newChildren[newStartIndex], replayer, rrnodeMirror);
@@ -5939,7 +6513,11 @@ function createOrGetNode(rrNode, domMirror, rrnodeMirror) {
       node = new Document();
       break;
     case NodeType$1.DocumentType:
-      node = document.implementation.createDocumentType(rrNode.name, rrNode.publicId, rrNode.systemId);
+      node = document.implementation.createDocumentType(
+        rrNode.name,
+        rrNode.publicId,
+        rrNode.systemId
+      );
       break;
     case NodeType$1.Element: {
       let tagName = rrNode.tagName.toLowerCase();
@@ -5998,7 +6576,11 @@ var RRDocument = class _RRDocument extends BaseRRDocumentImpl(BaseRRNode) {
     return new _RRDocument();
   }
   createDocumentType(qualifiedName, publicId, systemId) {
-    const documentTypeNode = new RRDocumentType(qualifiedName, publicId, systemId);
+    const documentTypeNode = new RRDocumentType(
+      qualifiedName,
+      publicId,
+      systemId
+    );
     documentTypeNode.ownerDocument = this;
     return documentTypeNode;
   }
@@ -6106,7 +6688,11 @@ function buildFromNode(node, rrdom, domMirror, parentRRNode) {
       break;
     case NodeType2.DOCUMENT_TYPE_NODE: {
       const documentType = node;
-      rrNode = rrdom.createDocumentType(documentType.name, documentType.publicId, documentType.systemId);
+      rrNode = rrdom.createDocumentType(
+        documentType.name,
+        documentType.publicId,
+        documentType.systemId
+      );
       break;
     }
     case NodeType2.ELEMENT_NODE: {
@@ -6350,7 +6936,27 @@ var fdeb = new u8([
   0,
   0
 ]);
-var clim = new u8([16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15]);
+var clim = new u8([
+  16,
+  17,
+  18,
+  0,
+  8,
+  7,
+  9,
+  6,
+  10,
+  5,
+  11,
+  4,
+  12,
+  3,
+  13,
+  2,
+  14,
+  1,
+  15
+]);
 var freb = function(eb, start) {
   var b = new u16(31);
   for (var i2 = 0; i2 < 31; ++i2) {
@@ -6788,7 +7394,17 @@ var wblk = function(dat, out, final, syms, lf, df, eb, li, bs, bl, p) {
   wbits16(out, p, lm[256]);
   return p + ll[256];
 };
-var deo = /* @__PURE__ */ new u32([65540, 131080, 131088, 131104, 262176, 1048704, 1048832, 2114560, 2117632]);
+var deo = /* @__PURE__ */ new u32([
+  65540,
+  131080,
+  131088,
+  131104,
+  262176,
+  1048704,
+  1048832,
+  2114560,
+  2117632
+]);
 var et = /* @__PURE__ */ new u8(0);
 var dflt = function(dat, lvl, plvl, pre, post, lst) {
   var s2 = dat.length;
@@ -6902,7 +7518,14 @@ var adler = function() {
   };
 };
 var dopt = function(dat, opt, pre, post, st) {
-  return dflt(dat, opt.level == null ? 6 : opt.level, opt.mem == null ? Math.ceil(Math.max(8, Math.min(13, Math.log(dat.length))) * 1.5) : 12 + opt.mem, pre, post, !st);
+  return dflt(
+    dat,
+    opt.level == null ? 6 : opt.level,
+    opt.mem == null ? Math.ceil(Math.max(8, Math.min(13, Math.log(dat.length))) * 1.5) : 12 + opt.mem,
+    pre,
+    post,
+    !st
+  );
 };
 var wbytes = function(d, b, v2) {
   for (; v2; ++b)
@@ -6968,7 +7591,9 @@ function strFromU8(dat, latin1) {
     else if (c2 < 224)
       r2 += String.fromCharCode((c2 & 31) << 6 | dat[i2++] & 63);
     else if (c2 < 240)
-      r2 += String.fromCharCode((c2 & 15) << 12 | (dat[i2++] & 63) << 6 | dat[i2++] & 63);
+      r2 += String.fromCharCode(
+        (c2 & 15) << 12 | (dat[i2++] & 63) << 6 | dat[i2++] & 63
+      );
     else
       c2 = ((c2 & 15) << 18 | (dat[i2++] & 63) << 12 | (dat[i2++] & 63) << 6 | dat[i2++] & 63) - 65536, r2 += String.fromCharCode(55296 | c2 >> 10, 56320 | c2 & 1023);
   }
@@ -7001,7 +7626,9 @@ var unpack = (raw) => {
     if (e2.v === MARK) {
       return e2;
     }
-    throw new Error(`These events were packed with packer ${e2.v} which is incompatible with current packer ${MARK}.`);
+    throw new Error(
+      `These events were packed with packer ${e2.v} which is incompatible with current packer ${MARK}.`
+    );
   } catch (error) {
     console.error(error);
     throw new Error("Unknown data format.");
@@ -7064,7 +7691,9 @@ var ErrorStackParser = {
       const location = sanitizedLine.match(/ (\((.+):(\d+):(\d+)\)$)/);
       sanitizedLine = location ? sanitizedLine.replace(location[0], "") : sanitizedLine;
       const tokens = sanitizedLine.split(/\s+/).slice(1);
-      const locationParts = this.extractLocation(location ? location[1] : tokens.pop());
+      const locationParts = this.extractLocation(
+        location ? location[1] : tokens.pop()
+      );
       const functionName = tokens.join(" ") || void 0;
       const fileName = ["eval", "<anonymous>"].indexOf(locationParts[0]) > -1 ? void 0 : locationParts[0];
       return new StackFrame({
@@ -7081,7 +7710,10 @@ var ErrorStackParser = {
     }, this);
     return filtered.map(function(line) {
       if (line.indexOf(" > eval") > -1) {
-        line = line.replace(/ line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g, ":$1");
+        line = line.replace(
+          / line (\d+)(?: > eval line \d+)* > eval:\d+:\d+/g,
+          ":$1"
+        );
       }
       if (line.indexOf("@") === -1 && line.indexOf(":") === -1) {
         return new StackFrame({
@@ -7091,7 +7723,9 @@ var ErrorStackParser = {
         const functionNameRegex = /((.*".+"[^@]*)?[^@]*)(?:@)/;
         const matches = line.match(functionNameRegex);
         const functionName = matches && matches[1] ? matches[1] : void 0;
-        const locationParts = this.extractLocation(line.replace(functionNameRegex, ""));
+        const locationParts = this.extractLocation(
+          line.replace(functionNameRegex, "")
+        );
         return new StackFrame({
           functionName,
           fileName: locationParts[0],
@@ -7117,10 +7751,12 @@ var ErrorStackParser = {
     for (let i2 = 2, len = lines.length; i2 < len; i2 += 2) {
       const match = lineRE.exec(lines[i2]);
       if (match) {
-        result.push(new StackFrame({
-          fileName: match[2],
-          lineNumber: parseFloat(match[1])
-        }));
+        result.push(
+          new StackFrame({
+            fileName: match[2],
+            lineNumber: parseFloat(match[1])
+          })
+        );
       }
     }
     return result;
@@ -7132,11 +7768,13 @@ var ErrorStackParser = {
     for (let i2 = 0, len = lines.length; i2 < len; i2 += 2) {
       const match = lineRE.exec(lines[i2]);
       if (match) {
-        result.push(new StackFrame({
-          functionName: match[3] || void 0,
-          fileName: match[2],
-          lineNumber: parseFloat(match[1])
-        }));
+        result.push(
+          new StackFrame({
+            functionName: match[3] || void 0,
+            fileName: match[2],
+            lineNumber: parseFloat(match[1])
+          })
+        );
       }
     }
     return result;
@@ -7242,7 +7880,9 @@ function stringify(obj, stringifyOptions) {
       for (const eventKey in value) {
         const eventValue = value[eventKey];
         if (Array.isArray(eventValue)) {
-          eventResult[eventKey] = pathToSelector(eventValue.length ? eventValue[0] : null);
+          eventResult[eventKey] = pathToSelector(
+            eventValue.length ? eventValue[0] : null
+          );
         } else {
           eventResult[eventKey] = eventValue;
         }
@@ -7324,7 +7964,9 @@ function initLogObserver(cb, win, options) {
   if (logOptions.level.includes("error")) {
     const errorHandler2 = (event) => {
       const message = event.message, error = event.error;
-      const trace = ErrorStackParser.parse(error).map((stackFrame) => stackFrame.toString());
+      const trace = ErrorStackParser.parse(error).map(
+        (stackFrame) => stackFrame.toString()
+      );
       const payload = [stringify(message, logOptions.stringifyOptions)];
       cb({
         level: "error",
@@ -7342,7 +7984,10 @@ function initLogObserver(cb, win, options) {
       if (event.reason instanceof Error) {
         error = event.reason;
         payload = [
-          stringify(`Uncaught (in promise) ${error.name}: ${error.message}`, logOptions.stringifyOptions)
+          stringify(
+            `Uncaught (in promise) ${error.name}: ${error.message}`,
+            logOptions.stringifyOptions
+          )
         ];
       } else {
         error = new Error();
@@ -7351,7 +7996,9 @@ function initLogObserver(cb, win, options) {
           stringify(event.reason, logOptions.stringifyOptions)
         ];
       }
-      const trace = ErrorStackParser.parse(error).map((stackFrame) => stackFrame.toString());
+      const trace = ErrorStackParser.parse(error).map(
+        (stackFrame) => stackFrame.toString()
+      );
       cb({
         level: "error",
         trace,
@@ -7383,7 +8030,9 @@ function initLogObserver(cb, win, options) {
         inStack = true;
         try {
           const trace = ErrorStackParser.parse(new Error()).map((stackFrame) => stackFrame.toString()).splice(1);
-          const payload = args.map((s2) => stringify(s2, logOptions.stringifyOptions));
+          const payload = args.map(
+            (s2) => stringify(s2, logOptions.stringifyOptions)
+          );
           logCount++;
           if (logCount < logOptions.lengthThreshold) {
             cb({
@@ -7452,12 +8101,18 @@ var LogReplayPlugin = class {
       if (level === "trace") {
         replayLogger[level] = (data) => {
           const logger = console.log[ORIGINAL_ATTRIBUTE_NAME2] ? console.log[ORIGINAL_ATTRIBUTE_NAME2] : console.log;
-          logger(...data.payload.map((s2) => JSON.parse(s2)), this.formatMessage(data));
+          logger(
+            ...data.payload.map((s2) => JSON.parse(s2)),
+            this.formatMessage(data)
+          );
         };
       } else {
         replayLogger[level] = (data) => {
           const logger = console[level][ORIGINAL_ATTRIBUTE_NAME2] ? console[level][ORIGINAL_ATTRIBUTE_NAME2] : console[level];
-          logger(...data.payload.map((s2) => JSON.parse(s2)), this.formatMessage(data));
+          logger(
+            ...data.payload.map((s2) => JSON.parse(s2)),
+            this.formatMessage(data)
+          );
         };
       }
     }
@@ -7531,12 +8186,16 @@ var getReplaySequentialIdPlugin = (options) => {
       if (key in event) {
         const id = event[key];
         if (id !== currentId) {
-          console.error(`[sequential-id-plugin]: expect to get an id with value "${currentId}", but got "${id}"`);
+          console.error(
+            `[sequential-id-plugin]: expect to get an id with value "${currentId}", but got "${id}"`
+          );
         } else {
           currentId++;
         }
       } else if (warnOnMissingId) {
-        console.warn(`[sequential-id-plugin]: failed to get id in key: "${key}"`);
+        console.warn(
+          `[sequential-id-plugin]: failed to get id in key: "${key}"`
+        );
       }
     }
   };
@@ -7597,7 +8256,9 @@ function polyfill2(w = window, d = document) {
     if (typeof firstArg === "object" && firstArg.behavior === "smooth") {
       return false;
     }
-    throw new TypeError("behavior member of ScrollOptions " + firstArg.behavior + " is not a valid value for enumeration ScrollBehavior.");
+    throw new TypeError(
+      "behavior member of ScrollOptions " + firstArg.behavior + " is not a valid value for enumeration ScrollBehavior."
+    );
   }
   function hasScrollableSpace(el, axis) {
     if (axis === "Y") {
@@ -7669,20 +8330,38 @@ function polyfill2(w = window, d = document) {
       return;
     }
     if (shouldBailOut(arguments[0]) === true) {
-      original.scroll.call(w, arguments[0].left !== void 0 ? arguments[0].left : typeof arguments[0] !== "object" ? arguments[0] : w.scrollX || w.pageXOffset, arguments[0].top !== void 0 ? arguments[0].top : arguments[1] !== void 0 ? arguments[1] : w.scrollY || w.pageYOffset);
+      original.scroll.call(
+        w,
+        arguments[0].left !== void 0 ? arguments[0].left : typeof arguments[0] !== "object" ? arguments[0] : w.scrollX || w.pageXOffset,
+        arguments[0].top !== void 0 ? arguments[0].top : arguments[1] !== void 0 ? arguments[1] : w.scrollY || w.pageYOffset
+      );
       return;
     }
-    smoothScroll.call(w, d.body, arguments[0].left !== void 0 ? ~~arguments[0].left : w.scrollX || w.pageXOffset, arguments[0].top !== void 0 ? ~~arguments[0].top : w.scrollY || w.pageYOffset);
+    smoothScroll.call(
+      w,
+      d.body,
+      arguments[0].left !== void 0 ? ~~arguments[0].left : w.scrollX || w.pageXOffset,
+      arguments[0].top !== void 0 ? ~~arguments[0].top : w.scrollY || w.pageYOffset
+    );
   };
   w.scrollBy = function() {
     if (arguments[0] === void 0) {
       return;
     }
     if (shouldBailOut(arguments[0])) {
-      original.scrollBy.call(w, arguments[0].left !== void 0 ? arguments[0].left : typeof arguments[0] !== "object" ? arguments[0] : 0, arguments[0].top !== void 0 ? arguments[0].top : arguments[1] !== void 0 ? arguments[1] : 0);
+      original.scrollBy.call(
+        w,
+        arguments[0].left !== void 0 ? arguments[0].left : typeof arguments[0] !== "object" ? arguments[0] : 0,
+        arguments[0].top !== void 0 ? arguments[0].top : arguments[1] !== void 0 ? arguments[1] : 0
+      );
       return;
     }
-    smoothScroll.call(w, d.body, ~~arguments[0].left + (w.scrollX || w.pageXOffset), ~~arguments[0].top + (w.scrollY || w.pageYOffset));
+    smoothScroll.call(
+      w,
+      d.body,
+      ~~arguments[0].left + (w.scrollX || w.pageXOffset),
+      ~~arguments[0].top + (w.scrollY || w.pageYOffset)
+    );
   };
   Element2.prototype.scroll = Element2.prototype.scrollTo = function() {
     if (arguments[0] === void 0) {
@@ -7692,19 +8371,32 @@ function polyfill2(w = window, d = document) {
       if (typeof arguments[0] === "number" && arguments[1] === void 0) {
         throw new SyntaxError("Value could not be converted");
       }
-      original.elementScroll.call(this, arguments[0].left !== void 0 ? ~~arguments[0].left : typeof arguments[0] !== "object" ? ~~arguments[0] : this.scrollLeft, arguments[0].top !== void 0 ? ~~arguments[0].top : arguments[1] !== void 0 ? ~~arguments[1] : this.scrollTop);
+      original.elementScroll.call(
+        this,
+        arguments[0].left !== void 0 ? ~~arguments[0].left : typeof arguments[0] !== "object" ? ~~arguments[0] : this.scrollLeft,
+        arguments[0].top !== void 0 ? ~~arguments[0].top : arguments[1] !== void 0 ? ~~arguments[1] : this.scrollTop
+      );
       return;
     }
     const left = arguments[0].left;
     const top = arguments[0].top;
-    smoothScroll.call(this, this, typeof left === "undefined" ? this.scrollLeft : ~~left, typeof top === "undefined" ? this.scrollTop : ~~top);
+    smoothScroll.call(
+      this,
+      this,
+      typeof left === "undefined" ? this.scrollLeft : ~~left,
+      typeof top === "undefined" ? this.scrollTop : ~~top
+    );
   };
   Element2.prototype.scrollBy = function() {
     if (arguments[0] === void 0) {
       return;
     }
     if (shouldBailOut(arguments[0]) === true) {
-      original.elementScroll.call(this, arguments[0].left !== void 0 ? ~~arguments[0].left + this.scrollLeft : ~~arguments[0] + this.scrollLeft, arguments[0].top !== void 0 ? ~~arguments[0].top + this.scrollTop : ~~arguments[1] + this.scrollTop);
+      original.elementScroll.call(
+        this,
+        arguments[0].left !== void 0 ? ~~arguments[0].left + this.scrollLeft : ~~arguments[0] + this.scrollLeft,
+        arguments[0].top !== void 0 ? ~~arguments[0].top + this.scrollTop : ~~arguments[1] + this.scrollTop
+      );
       return;
     }
     this.scroll({
@@ -7715,14 +8407,22 @@ function polyfill2(w = window, d = document) {
   };
   Element2.prototype.scrollIntoView = function() {
     if (shouldBailOut(arguments[0]) === true) {
-      original.scrollIntoView.call(this, arguments[0] === void 0 ? true : arguments[0]);
+      original.scrollIntoView.call(
+        this,
+        arguments[0] === void 0 ? true : arguments[0]
+      );
       return;
     }
     const scrollableParent = findScrollableParent(this);
     const parentRects = scrollableParent.getBoundingClientRect();
     const clientRects = this.getBoundingClientRect();
     if (scrollableParent !== d.body) {
-      smoothScroll.call(this, scrollableParent, scrollableParent.scrollLeft + clientRects.left - parentRects.left, scrollableParent.scrollTop + clientRects.top - parentRects.top);
+      smoothScroll.call(
+        this,
+        scrollableParent,
+        scrollableParent.scrollLeft + clientRects.left - parentRects.left,
+        scrollableParent.scrollTop + clientRects.top - parentRects.top
+      );
       if (w.getComputedStyle(scrollableParent).position !== "fixed") {
         w.scrollBy({
           left: parentRects.left,
@@ -7881,64 +8581,102 @@ function c(t2, n2) {
 }
 function f(t2, n2, e2) {
   var r2 = n2, o2 = false;
-  return [t2.filter(function(t3) {
-    if ("xstate.assign" === t3.type) {
-      o2 = true;
-      var n3 = Object.assign({}, r2);
-      return "function" == typeof t3.assignment ? n3 = t3.assignment(r2, e2) : Object.keys(t3.assignment).forEach(function(o3) {
-        n3[o3] = "function" == typeof t3.assignment[o3] ? t3.assignment[o3](r2, e2) : t3.assignment[o3];
-      }), r2 = n3, false;
-    }
-    return true;
-  }), r2, o2];
+  return [
+    t2.filter(function(t3) {
+      if ("xstate.assign" === t3.type) {
+        o2 = true;
+        var n3 = Object.assign({}, r2);
+        return "function" == typeof t3.assignment ? n3 = t3.assignment(r2, e2) : Object.keys(t3.assignment).forEach(function(o3) {
+          n3[o3] = "function" == typeof t3.assignment[o3] ? t3.assignment[o3](r2, e2) : t3.assignment[o3];
+        }), r2 = n3, false;
+      }
+      return true;
+    }),
+    r2,
+    o2
+  ];
 }
 function s(n2, o2) {
   void 0 === o2 && (o2 = {});
-  var s2 = t(f(r(n2.states[n2.initial].entry).map(function(t2) {
-    return i(t2, o2.actions);
-  }), n2.context, e), 2), l2 = s2[0], v2 = s2[1], y = { config: n2, _options: o2, initialState: { value: n2.initial, actions: l2, context: v2, matches: a(n2.initial) }, transition: function(e2, o3) {
-    var s3, l3, v3 = "string" == typeof e2 ? { value: e2, context: n2.context } : e2, p = v3.value, g = v3.context, d = u(o3), x = n2.states[p];
-    if (x.on) {
-      var m = r(x.on[d.type]);
-      try {
-        for (var h = function(t2) {
-          var n3 = "function" == typeof Symbol && Symbol.iterator, e3 = n3 && t2[n3], r2 = 0;
-          if (e3)
-            return e3.call(t2);
-          if (t2 && "number" == typeof t2.length)
-            return { next: function() {
-              return t2 && r2 >= t2.length && (t2 = void 0), { value: t2 && t2[r2++], done: !t2 };
-            } };
-          throw new TypeError(n3 ? "Object is not iterable." : "Symbol.iterator is not defined.");
-        }(m), b = h.next(); !b.done; b = h.next()) {
-          var S = b.value;
-          if (void 0 === S)
-            return c(p, g);
-          var w = "string" == typeof S ? { target: S } : S, j = w.target, E = w.actions, R = void 0 === E ? [] : E, N = w.cond, O = void 0 === j;
-          if ((void 0 === N ? function() {
-            return true;
-          } : N)(g, d)) {
-            var _ = n2.states[null != j ? j : p], k = t(f((O ? r(R) : [].concat(x.exit, R, _.entry).filter(function(t2) {
-              return t2;
-            })).map(function(t2) {
-              return i(t2, y._options.actions);
-            }), g, d), 3), T = k[0], q = k[1], z = k[2], A = null != j ? j : p;
-            return { value: A, context: q, actions: T, changed: j !== p || T.length > 0 || z, matches: a(A) };
+  var s2 = t(
+    f(
+      r(n2.states[n2.initial].entry).map(function(t2) {
+        return i(t2, o2.actions);
+      }),
+      n2.context,
+      e
+    ),
+    2
+  ), l2 = s2[0], v2 = s2[1], y = {
+    config: n2,
+    _options: o2,
+    initialState: {
+      value: n2.initial,
+      actions: l2,
+      context: v2,
+      matches: a(n2.initial)
+    },
+    transition: function(e2, o3) {
+      var s3, l3, v3 = "string" == typeof e2 ? { value: e2, context: n2.context } : e2, p = v3.value, g = v3.context, d = u(o3), x = n2.states[p];
+      if (x.on) {
+        var m = r(x.on[d.type]);
+        try {
+          for (var h = function(t2) {
+            var n3 = "function" == typeof Symbol && Symbol.iterator, e3 = n3 && t2[n3], r2 = 0;
+            if (e3)
+              return e3.call(t2);
+            if (t2 && "number" == typeof t2.length)
+              return {
+                next: function() {
+                  return t2 && r2 >= t2.length && (t2 = void 0), { value: t2 && t2[r2++], done: !t2 };
+                }
+              };
+            throw new TypeError(
+              n3 ? "Object is not iterable." : "Symbol.iterator is not defined."
+            );
+          }(m), b = h.next(); !b.done; b = h.next()) {
+            var S = b.value;
+            if (void 0 === S)
+              return c(p, g);
+            var w = "string" == typeof S ? { target: S } : S, j = w.target, E = w.actions, R = void 0 === E ? [] : E, N = w.cond, O = void 0 === j;
+            if ((void 0 === N ? function() {
+              return true;
+            } : N)(g, d)) {
+              var _ = n2.states[null != j ? j : p], k = t(
+                f(
+                  (O ? r(R) : [].concat(x.exit, R, _.entry).filter(function(t2) {
+                    return t2;
+                  })).map(function(t2) {
+                    return i(t2, y._options.actions);
+                  }),
+                  g,
+                  d
+                ),
+                3
+              ), T = k[0], q = k[1], z = k[2], A = null != j ? j : p;
+              return {
+                value: A,
+                context: q,
+                actions: T,
+                changed: j !== p || T.length > 0 || z,
+                matches: a(A)
+              };
+            }
+          }
+        } catch (t2) {
+          s3 = { error: t2 };
+        } finally {
+          try {
+            b && !b.done && (l3 = h.return) && l3.call(h);
+          } finally {
+            if (s3)
+              throw s3.error;
           }
         }
-      } catch (t2) {
-        s3 = { error: t2 };
-      } finally {
-        try {
-          b && !b.done && (l3 = h.return) && l3.call(h);
-        } finally {
-          if (s3)
-            throw s3.error;
-        }
       }
+      return c(p, g);
     }
-    return c(p, g);
-  } };
+  };
   return y;
 }
 var l = function(t2, n2) {
@@ -7948,27 +8686,42 @@ var l = function(t2, n2) {
   });
 };
 function v(t2) {
-  var r2 = t2.initialState, o2 = n.NotStarted, i2 = /* @__PURE__ */ new Set(), c2 = { _machine: t2, send: function(e2) {
-    o2 === n.Running && (r2 = t2.transition(r2, e2), l(r2, u(e2)), i2.forEach(function(t3) {
-      return t3(r2);
-    }));
-  }, subscribe: function(t3) {
-    return i2.add(t3), t3(r2), { unsubscribe: function() {
-      return i2.delete(t3);
-    } };
-  }, start: function(i3) {
-    if (i3) {
-      var u2 = "object" == typeof i3 ? i3 : { context: t2.config.context, value: i3 };
-      r2 = { value: u2.value, actions: [], context: u2.context, matches: a(u2.value) };
+  var r2 = t2.initialState, o2 = n.NotStarted, i2 = /* @__PURE__ */ new Set(), c2 = {
+    _machine: t2,
+    send: function(e2) {
+      o2 === n.Running && (r2 = t2.transition(r2, e2), l(r2, u(e2)), i2.forEach(function(t3) {
+        return t3(r2);
+      }));
+    },
+    subscribe: function(t3) {
+      return i2.add(t3), t3(r2), {
+        unsubscribe: function() {
+          return i2.delete(t3);
+        }
+      };
+    },
+    start: function(i3) {
+      if (i3) {
+        var u2 = "object" == typeof i3 ? i3 : { context: t2.config.context, value: i3 };
+        r2 = {
+          value: u2.value,
+          actions: [],
+          context: u2.context,
+          matches: a(u2.value)
+        };
+      }
+      return o2 = n.Running, l(r2, e), c2;
+    },
+    stop: function() {
+      return o2 = n.Stopped, i2.clear(), c2;
+    },
+    get state() {
+      return r2;
+    },
+    get status() {
+      return o2;
     }
-    return o2 = n.Running, l(r2, e), c2;
-  }, stop: function() {
-    return o2 = n.Stopped, i2.clear(), c2;
-  }, get state() {
-    return r2;
-  }, get status() {
-    return o2;
-  } };
+  };
   return c2;
 }
 
@@ -7985,152 +8738,119 @@ function discardPriorSnapshots(events, baselineTime) {
   return events;
 }
 function createPlayerService(context, { getCastFn, applyEventsSynchronously, emitter }) {
-  const playerMachine = s({
-    id: "player",
-    context,
-    initial: "paused",
-    states: {
-      playing: {
-        on: {
-          PAUSE: {
-            target: "paused",
-            actions: ["pause"]
-          },
-          CAST_EVENT: {
-            target: "playing",
-            actions: "castEvent"
-          },
-          END: {
-            target: "paused",
-            actions: ["resetLastPlayedEvent", "pause"]
-          },
-          ADD_EVENT: {
-            target: "playing",
-            actions: ["addEvent"]
-          },
-          REPLACE_EVENTS: {
-            target: "playing",
-            actions: ["replaceEvents"]
+  const playerMachine = s(
+    {
+      id: "player",
+      context,
+      initial: "paused",
+      states: {
+        playing: {
+          on: {
+            PAUSE: {
+              target: "paused",
+              actions: ["pause"]
+            },
+            CAST_EVENT: {
+              target: "playing",
+              actions: "castEvent"
+            },
+            END: {
+              target: "paused",
+              actions: ["resetLastPlayedEvent", "pause"]
+            },
+            ADD_EVENT: {
+              target: "playing",
+              actions: ["addEvent"]
+            },
+            REPLACE_EVENTS: {
+              target: "playing",
+              actions: ["replaceEvents"]
+            }
           }
-        }
-      },
-      paused: {
-        on: {
-          PLAY: {
-            target: "playing",
-            actions: ["recordTimeOffset", "play"]
-          },
-          CAST_EVENT: {
-            target: "paused",
-            actions: "castEvent"
-          },
-          TO_LIVE: {
-            target: "live",
-            actions: ["startLive"]
-          },
-          ADD_EVENT: {
-            target: "paused",
-            actions: ["addEvent"]
-          },
-          REPLACE_EVENTS: {
-            target: "paused",
-            actions: ["replaceEvents"]
+        },
+        paused: {
+          on: {
+            PLAY: {
+              target: "playing",
+              actions: ["recordTimeOffset", "play"]
+            },
+            CAST_EVENT: {
+              target: "paused",
+              actions: "castEvent"
+            },
+            TO_LIVE: {
+              target: "live",
+              actions: ["startLive"]
+            },
+            ADD_EVENT: {
+              target: "paused",
+              actions: ["addEvent"]
+            },
+            REPLACE_EVENTS: {
+              target: "paused",
+              actions: ["replaceEvents"]
+            }
           }
-        }
-      },
-      live: {
-        on: {
-          ADD_EVENT: {
-            target: "live",
-            actions: ["addEvent"]
-          },
-          CAST_EVENT: {
-            target: "live",
-            actions: ["castEvent"]
+        },
+        live: {
+          on: {
+            ADD_EVENT: {
+              target: "live",
+              actions: ["addEvent"]
+            },
+            CAST_EVENT: {
+              target: "live",
+              actions: ["castEvent"]
+            }
           }
         }
       }
-    }
-  }, {
-    actions: {
-      castEvent: o({
-        lastPlayedEvent: (ctx, event) => {
-          if (event.type === "CAST_EVENT") {
-            return event.payload.event;
+    },
+    {
+      actions: {
+        castEvent: o({
+          lastPlayedEvent: (ctx, event) => {
+            if (event.type === "CAST_EVENT") {
+              return event.payload.event;
+            }
+            return ctx.lastPlayedEvent;
           }
-          return ctx.lastPlayedEvent;
-        }
-      }),
-      recordTimeOffset: o((ctx, event) => {
-        let timeOffset = ctx.timeOffset;
-        if ("payload" in event && "timeOffset" in event.payload) {
-          timeOffset = event.payload.timeOffset;
-        }
-        return Object.assign(Object.assign({}, ctx), { timeOffset, baselineTime: ctx.events[0].timestamp + timeOffset });
-      }),
-      play(ctx) {
-        var _a2;
-        const { timer, events, baselineTime, lastPlayedEvent } = ctx;
-        timer.clear();
-        for (const event of events) {
-          addDelay(event, baselineTime);
-        }
-        const neededEvents = discardPriorSnapshots(events, baselineTime);
-        let lastPlayedTimestamp = lastPlayedEvent === null || lastPlayedEvent === void 0 ? void 0 : lastPlayedEvent.timestamp;
-        if ((lastPlayedEvent === null || lastPlayedEvent === void 0 ? void 0 : lastPlayedEvent.type) === EventType.IncrementalSnapshot && lastPlayedEvent.data.source === IncrementalSource.MouseMove) {
-          lastPlayedTimestamp = lastPlayedEvent.timestamp + ((_a2 = lastPlayedEvent.data.positions[0]) === null || _a2 === void 0 ? void 0 : _a2.timeOffset);
-        }
-        if (baselineTime < (lastPlayedTimestamp || 0)) {
-          emitter.emit(ReplayerEvents.PlayBack);
-        }
-        const syncEvents = new Array();
-        for (const event of neededEvents) {
-          if (lastPlayedTimestamp && lastPlayedTimestamp < baselineTime && (event.timestamp <= lastPlayedTimestamp || event === lastPlayedEvent)) {
-            continue;
+        }),
+        recordTimeOffset: o((ctx, event) => {
+          let timeOffset = ctx.timeOffset;
+          if ("payload" in event && "timeOffset" in event.payload) {
+            timeOffset = event.payload.timeOffset;
           }
-          if (event.timestamp < baselineTime) {
-            syncEvents.push(event);
-          } else {
-            const castFn = getCastFn(event, false);
-            timer.addAction({
-              doAction: () => {
-                castFn();
-              },
-              delay: event.delay
-            });
-          }
-        }
-        applyEventsSynchronously(syncEvents);
-        emitter.emit(ReplayerEvents.Flush);
-        timer.start();
-      },
-      pause(ctx) {
-        ctx.timer.clear();
-      },
-      resetLastPlayedEvent: o((ctx) => {
-        return Object.assign(Object.assign({}, ctx), { lastPlayedEvent: null });
-      }),
-      startLive: o({
-        baselineTime: (ctx, event) => {
-          ctx.timer.start();
-          if (event.type === "TO_LIVE" && event.payload.baselineTime) {
-            return event.payload.baselineTime;
-          }
-          return Date.now();
-        }
-      }),
-      replaceEvents: o((ctx, machineEvent) => {
-        const { events: curEvents, timer, baselineTime } = ctx;
-        if (machineEvent.type === "REPLACE_EVENTS") {
-          const { events: newEvents } = machineEvent.payload;
-          curEvents.length = 0;
-          const actions = [];
-          for (const event of newEvents) {
+          return Object.assign(Object.assign({}, ctx), {
+            timeOffset,
+            baselineTime: ctx.events[0].timestamp + timeOffset
+          });
+        }),
+        play(ctx) {
+          var _a2;
+          const { timer, events, baselineTime, lastPlayedEvent } = ctx;
+          timer.clear();
+          for (const event of events) {
             addDelay(event, baselineTime);
-            curEvents.push(event);
-            if (event.timestamp >= timer.timeOffset + baselineTime) {
+          }
+          const neededEvents = discardPriorSnapshots(events, baselineTime);
+          let lastPlayedTimestamp = lastPlayedEvent === null || lastPlayedEvent === void 0 ? void 0 : lastPlayedEvent.timestamp;
+          if ((lastPlayedEvent === null || lastPlayedEvent === void 0 ? void 0 : lastPlayedEvent.type) === EventType.IncrementalSnapshot && lastPlayedEvent.data.source === IncrementalSource.MouseMove) {
+            lastPlayedTimestamp = lastPlayedEvent.timestamp + ((_a2 = lastPlayedEvent.data.positions[0]) === null || _a2 === void 0 ? void 0 : _a2.timeOffset);
+          }
+          if (baselineTime < (lastPlayedTimestamp || 0)) {
+            emitter.emit(ReplayerEvents.PlayBack);
+          }
+          const syncEvents = new Array();
+          for (const event of neededEvents) {
+            if (lastPlayedTimestamp && lastPlayedTimestamp < baselineTime && (event.timestamp <= lastPlayedTimestamp || event === lastPlayedEvent)) {
+              continue;
+            }
+            if (event.timestamp < baselineTime) {
+              syncEvents.push(event);
+            } else {
               const castFn = getCastFn(event, false);
-              actions.push({
+              timer.addAction({
                 doAction: () => {
                   castFn();
                 },
@@ -8138,101 +8858,145 @@ function createPlayerService(context, { getCastFn, applyEventsSynchronously, emi
               });
             }
           }
-          if (timer.isActive()) {
-            timer.replaceActions(actions);
+          applyEventsSynchronously(syncEvents);
+          emitter.emit(ReplayerEvents.Flush);
+          timer.start();
+        },
+        pause(ctx) {
+          ctx.timer.clear();
+        },
+        resetLastPlayedEvent: o((ctx) => {
+          return Object.assign(Object.assign({}, ctx), {
+            lastPlayedEvent: null
+          });
+        }),
+        startLive: o({
+          baselineTime: (ctx, event) => {
+            ctx.timer.start();
+            if (event.type === "TO_LIVE" && event.payload.baselineTime) {
+              return event.payload.baselineTime;
+            }
+            return Date.now();
           }
-        }
-        return Object.assign(Object.assign({}, ctx), { events: curEvents });
-      }),
-      addEvent: o((ctx, machineEvent) => {
-        const { baselineTime, timer, events } = ctx;
-        if (machineEvent.type === "ADD_EVENT") {
-          const { event } = machineEvent.payload;
-          addDelay(event, baselineTime);
-          let end = events.length - 1;
-          if (!events[end] || events[end].timestamp <= event.timestamp) {
-            events.push(event);
-          } else {
-            let insertionIndex = -1;
-            let start = 0;
-            while (start <= end) {
-              const mid = Math.floor((start + end) / 2);
-              if (events[mid].timestamp <= event.timestamp) {
-                start = mid + 1;
-              } else {
-                end = mid - 1;
+        }),
+        replaceEvents: o((ctx, machineEvent) => {
+          const { events: curEvents, timer, baselineTime } = ctx;
+          if (machineEvent.type === "REPLACE_EVENTS") {
+            const { events: newEvents } = machineEvent.payload;
+            curEvents.length = 0;
+            const actions = [];
+            for (const event of newEvents) {
+              addDelay(event, baselineTime);
+              curEvents.push(event);
+              if (event.timestamp >= timer.timeOffset + baselineTime) {
+                const castFn = getCastFn(event, false);
+                actions.push({
+                  doAction: () => {
+                    castFn();
+                  },
+                  delay: event.delay
+                });
               }
             }
-            if (insertionIndex === -1) {
-              insertionIndex = start;
+            if (timer.isActive()) {
+              timer.replaceActions(actions);
             }
-            events.splice(insertionIndex, 0, event);
           }
-          const isSync = event.timestamp < baselineTime;
-          const castFn = getCastFn(event, isSync);
-          if (isSync) {
-            castFn();
-          } else if (timer.isActive()) {
-            timer.addAction({
-              doAction: () => {
-                castFn();
-              },
-              delay: event.delay
-            });
+          return Object.assign(Object.assign({}, ctx), { events: curEvents });
+        }),
+        addEvent: o((ctx, machineEvent) => {
+          const { baselineTime, timer, events } = ctx;
+          if (machineEvent.type === "ADD_EVENT") {
+            const { event } = machineEvent.payload;
+            addDelay(event, baselineTime);
+            let end = events.length - 1;
+            if (!events[end] || events[end].timestamp <= event.timestamp) {
+              events.push(event);
+            } else {
+              let insertionIndex = -1;
+              let start = 0;
+              while (start <= end) {
+                const mid = Math.floor((start + end) / 2);
+                if (events[mid].timestamp <= event.timestamp) {
+                  start = mid + 1;
+                } else {
+                  end = mid - 1;
+                }
+              }
+              if (insertionIndex === -1) {
+                insertionIndex = start;
+              }
+              events.splice(insertionIndex, 0, event);
+            }
+            const isSync = event.timestamp < baselineTime;
+            const castFn = getCastFn(event, isSync);
+            if (isSync) {
+              castFn();
+            } else if (timer.isActive()) {
+              timer.addAction({
+                doAction: () => {
+                  castFn();
+                },
+                delay: event.delay
+              });
+            }
           }
-        }
-        return Object.assign(Object.assign({}, ctx), { events });
-      })
+          return Object.assign(Object.assign({}, ctx), { events });
+        })
+      }
     }
-  });
+  );
   return v(playerMachine);
 }
 function createSpeedService(context) {
-  const speedMachine = s({
-    id: "speed",
-    context,
-    initial: "normal",
-    states: {
-      normal: {
-        on: {
-          FAST_FORWARD: {
-            target: "skipping",
-            actions: ["recordSpeed", "setSpeed"]
-          },
-          SET_SPEED: {
-            target: "normal",
-            actions: ["setSpeed"]
+  const speedMachine = s(
+    {
+      id: "speed",
+      context,
+      initial: "normal",
+      states: {
+        normal: {
+          on: {
+            FAST_FORWARD: {
+              target: "skipping",
+              actions: ["recordSpeed", "setSpeed"]
+            },
+            SET_SPEED: {
+              target: "normal",
+              actions: ["setSpeed"]
+            }
           }
-        }
-      },
-      skipping: {
-        on: {
-          BACK_TO_NORMAL: {
-            target: "normal",
-            actions: ["restoreSpeed"]
-          },
-          SET_SPEED: {
-            target: "normal",
-            actions: ["setSpeed"]
+        },
+        skipping: {
+          on: {
+            BACK_TO_NORMAL: {
+              target: "normal",
+              actions: ["restoreSpeed"]
+            },
+            SET_SPEED: {
+              target: "normal",
+              actions: ["setSpeed"]
+            }
           }
         }
       }
-    }
-  }, {
-    actions: {
-      setSpeed: (ctx, event) => {
-        if ("payload" in event) {
-          ctx.timer.setSpeed(event.payload.speed);
+    },
+    {
+      actions: {
+        setSpeed: (ctx, event) => {
+          if ("payload" in event) {
+            ctx.timer.setSpeed(event.payload.speed);
+          }
+        },
+        recordSpeed: o({
+          normalSpeed: (ctx) => ctx.timer.speed
+        }),
+        restoreSpeed: (ctx) => {
+          ctx.timer.setSpeed(ctx.normalSpeed);
         }
-      },
-      recordSpeed: o({
-        normalSpeed: (ctx) => ctx.timer.speed
-      }),
-      restoreSpeed: (ctx) => {
-        ctx.timer.setSpeed(ctx.normalSpeed);
       }
     }
-  });
+  );
   return v(speedMachine);
 }
 
@@ -8272,7 +9036,11 @@ function deserializeArg(imageMap, ctx, preload) {
       } else if ("args" in arg) {
         const { rr_type: name, args } = arg;
         const ctor = window[name];
-        return new ctor(...yield Promise.all(args.map(deserializeArg(imageMap, ctx, preload))));
+        return new ctor(
+          ...yield Promise.all(
+            args.map(deserializeArg(imageMap, ctx, preload))
+          )
+        );
       } else if ("base64" in arg) {
         return decode(arg.base64);
       } else if ("src" in arg) {
@@ -8286,14 +9054,18 @@ function deserializeArg(imageMap, ctx, preload) {
           return image2;
         }
       } else if ("data" in arg && arg.rr_type === "Blob") {
-        const blobContents = yield Promise.all(arg.data.map(deserializeArg(imageMap, ctx, preload)));
+        const blobContents = yield Promise.all(
+          arg.data.map(deserializeArg(imageMap, ctx, preload))
+        );
         const blob = new Blob(blobContents, {
           type: arg.type
         });
         return blob;
       }
     } else if (Array.isArray(arg)) {
-      const result = yield Promise.all(arg.map(deserializeArg(imageMap, ctx, preload)));
+      const result = yield Promise.all(
+        arg.map(deserializeArg(imageMap, ctx, preload))
+      );
       return result;
     }
     return arg;
@@ -8344,7 +9116,9 @@ function webglMutation({ mutation, target, type, imageMap, errorHandler: errorHa
         return;
       }
       const original = ctx[mutation.property];
-      const args = yield Promise.all(mutation.args.map(deserializeArg(imageMap, ctx)));
+      const args = yield Promise.all(
+        mutation.args.map(deserializeArg(imageMap, ctx))
+      );
       const result = original.apply(ctx, args);
       saveToWebGLVarMap(ctx, result);
       const debugMode = false;
@@ -8370,7 +9144,9 @@ function canvasMutation({ event, mutation, target, imageMap, errorHandler: error
         imageMap.get(event);
         original.apply(ctx, mutation.args);
       } else {
-        const args = yield Promise.all(mutation.args.map(deserializeArg(imageMap, ctx)));
+        const args = yield Promise.all(
+          mutation.args.map(deserializeArg(imageMap, ctx))
+        );
         original.apply(ctx, args);
       }
     } catch (error) {
@@ -8380,7 +9156,14 @@ function canvasMutation({ event, mutation, target, imageMap, errorHandler: error
 }
 
 // ../rrweb/packages/rrweb/es/rrweb/rrweb/packages/rrweb/src/replay/canvas/index.js
-function canvasMutation2({ event, mutation, target, imageMap, canvasEventMap, errorHandler: errorHandler2 }) {
+function canvasMutation2({
+  event,
+  mutation,
+  target,
+  imageMap,
+  canvasEventMap,
+  errorHandler: errorHandler2
+}) {
   return __awaiter(this, void 0, void 0, function* () {
     try {
       const precomputedMutation = canvasEventMap.get(event) || mutation;
@@ -8541,7 +9324,10 @@ var Replayer = class {
               if (this.nextUserInteractionEvent) {
                 const skipTime = this.nextUserInteractionEvent.delay - event.delay;
                 const payload = {
-                  speed: Math.min(Math.round(skipTime / SKIP_TIME_INTERVAL), this.config.maxSpeed)
+                  speed: Math.min(
+                    Math.round(skipTime / SKIP_TIME_INTERVAL),
+                    this.config.maxSpeed
+                  )
                 };
                 this.speedService.send({ type: "FAST_FORWARD", payload });
                 this.emitter.emit(ReplayerEvents.SkipStart, payload);
@@ -8643,7 +9429,12 @@ var Replayer = class {
         };
         if (this.iframe.contentDocument)
           try {
-            diff(this.iframe.contentDocument, this.virtualDom, replayerHandler, this.virtualDom.mirror);
+            diff(
+              this.iframe.contentDocument,
+              this.virtualDom,
+              replayerHandler,
+              this.virtualDom.mirror
+            );
           } catch (e2) {
             console.warn(e2);
           }
@@ -8653,8 +9444,17 @@ var Replayer = class {
           for (const key in this.legacy_missingNodeRetryMap) {
             try {
               const value = this.legacy_missingNodeRetryMap[key];
-              const realNode = createOrGetNode(value.node, this.mirror, this.virtualDom.mirror);
-              diff(realNode, value.node, replayerHandler, this.virtualDom.mirror);
+              const realNode = createOrGetNode(
+                value.node,
+                this.mirror,
+                this.virtualDom.mirror
+              );
+              diff(
+                realNode,
+                value.node,
+                replayerHandler,
+                this.virtualDom.mirror
+              );
               value.node = realNode;
             } catch (error) {
               this.warn(error);
@@ -8671,7 +9471,13 @@ var Replayer = class {
         this.adoptedStyleSheets = [];
       }
       if (this.mousePos) {
-        this.moveAndHover(this.mousePos.x, this.mousePos.y, this.mousePos.id, true, this.mousePos.debugData);
+        this.moveAndHover(
+          this.mousePos.x,
+          this.mousePos.y,
+          this.mousePos.id,
+          true,
+          this.mousePos.debugData
+        );
         this.mousePos = null;
       }
       if (this.touchActive === true) {
@@ -8698,22 +9504,25 @@ var Replayer = class {
     const timer = new Timer([], {
       speed: this.config.speed
     });
-    this.service = createPlayerService({
-      events: events.map((e2) => {
-        if (config && config.unpackFn) {
-          return config.unpackFn(e2);
-        }
-        return e2;
-      }).sort((a1, a2) => a1.timestamp - a2.timestamp),
-      timer,
-      timeOffset: 0,
-      baselineTime: 0,
-      lastPlayedEvent: null
-    }, {
-      getCastFn: this.getCastFn,
-      applyEventsSynchronously: this.applyEventsSynchronously,
-      emitter: this.emitter
-    });
+    this.service = createPlayerService(
+      {
+        events: events.map((e2) => {
+          if (config && config.unpackFn) {
+            return config.unpackFn(e2);
+          }
+          return e2;
+        }).sort((a1, a2) => a1.timestamp - a2.timestamp),
+        timer,
+        timeOffset: 0,
+        baselineTime: 0,
+        lastPlayedEvent: null
+      },
+      {
+        getCastFn: this.getCastFn,
+        applyEventsSynchronously: this.applyEventsSynchronously,
+        emitter: this.emitter
+      }
+    );
     this.service.start();
     this.service.subscribe((state) => {
       this.emitter.emit(ReplayerEvents.StateChange, {
@@ -8730,8 +9539,12 @@ var Replayer = class {
         speed: state
       });
     });
-    const firstMeta = this.service.state.context.events.find((e2) => e2.type === EventType.Meta);
-    const firstFullsnapshot = this.service.state.context.events.find((e2) => e2.type === EventType.FullSnapshot);
+    const firstMeta = this.service.state.context.events.find(
+      (e2) => e2.type === EventType.Meta
+    );
+    const firstFullsnapshot = this.service.state.context.events.find(
+      (e2) => e2.type === EventType.FullSnapshot
+    );
     if (firstMeta) {
       const { width, height } = firstMeta.data;
       setTimeout(() => {
@@ -8803,7 +9616,9 @@ var Replayer = class {
       const metadata = this.getMetaData();
       const userInteractionEvents = [
         { timestamp: metadata.startTime },
-        ...this.service.state.context.events.filter((ev) => this.isUserInteraction(ev)),
+        ...this.service.state.context.events.filter(
+          (ev) => this.isUserInteraction(ev)
+        ),
         { timestamp: metadata.endTime }
       ];
       for (let i2 = 1; i2 < userInteractionEvents.length; i2++) {
@@ -8912,7 +9727,9 @@ var Replayer = class {
     this.emitter.emit(ReplayerEvents.Pause);
   }
   resume(timeOffset = 0) {
-    this.warn(`The 'resume' was deprecated in 1.0. Please use 'play' method which has the same interface.`);
+    this.warn(
+      `The 'resume' was deprecated in 1.0. Please use 'play' method which has the same interface.`
+    );
     this.play(timeOffset);
     this.emitter.emit(ReplayerEvents.Resume);
   }
@@ -8929,7 +9746,9 @@ var Replayer = class {
     if (indicatesTouchDevice(event)) {
       this.mouse.classList.add("touch-device");
     }
-    void Promise.resolve().then(() => this.service.send({ type: "ADD_EVENT", payload: { event } }));
+    void Promise.resolve().then(
+      () => this.service.send({ type: "ADD_EVENT", payload: { event } })
+    );
   }
   replaceEvents(events) {
     for (const event of events) {
@@ -8993,7 +9812,9 @@ var Replayer = class {
       if (this.inactiveEndTimestamp) {
         const skipTime = this.inactiveEndTimestamp - timestamp;
         const payload = {
-          speed: skipTime / SKIP_DURATION_LIMIT * this.config.inactiveSkipTime < SKIP_TIME_MIN ? skipTime / SKIP_TIME_MIN : Math.round(Math.max(skipTime, SKIP_DURATION_LIMIT) / this.config.inactiveSkipTime)
+          speed: skipTime / SKIP_DURATION_LIMIT * this.config.inactiveSkipTime < SKIP_TIME_MIN ? skipTime / SKIP_TIME_MIN : Math.round(
+            Math.max(skipTime, SKIP_DURATION_LIMIT) / this.config.inactiveSkipTime
+          )
         };
         this.speedService.send({ type: "FAST_FORWARD", payload });
         this.emitter.emit(ReplayerEvents.SkipStart, payload);
@@ -9005,7 +9826,10 @@ var Replayer = class {
       return this.warn("Looks like your replayer has been destroyed.");
     }
     if (Object.keys(this.legacy_missingNodeRetryMap).length) {
-      this.warn("Found unresolved missing node map", this.legacy_missingNodeRetryMap);
+      this.warn(
+        "Found unresolved missing node map",
+        this.legacy_missingNodeRetryMap
+      );
     }
     this.legacy_missingNodeRetryMap = {};
     const collected = [];
@@ -9033,7 +9857,9 @@ var Replayer = class {
     afterAppend(this.iframe.contentDocument, event.data.node.id);
     for (const { mutationInQueue, builtNode } of collected) {
       this.attachDocumentToIframe(mutationInQueue, builtNode);
-      this.newDocumentQueue = this.newDocumentQueue.filter((m) => m !== mutationInQueue);
+      this.newDocumentQueue = this.newDocumentQueue.filter(
+        (m) => m !== mutationInQueue
+      );
     }
     const { documentElement, head } = this.iframe.contentDocument;
     this.insertStyleRules(documentElement, head);
@@ -9050,13 +9876,20 @@ var Replayer = class {
   }
   insertStyleRules(documentElement, head) {
     var _a2;
-    const injectStylesRules = rules(this.config.blockClass).concat(this.config.insertStyleRules);
+    const injectStylesRules = rules(this.config.blockClass).concat(
+      this.config.insertStyleRules
+    );
     if (this.config.pauseAnimation) {
-      injectStylesRules.push("html.rrweb-paused *, html.rrweb-paused *:before, html.rrweb-paused *:after { animation-play-state: paused !important; }");
+      injectStylesRules.push(
+        "html.rrweb-paused *, html.rrweb-paused *:before, html.rrweb-paused *:after { animation-play-state: paused !important; }"
+      );
     }
     if (this.usingVirtualDom) {
       const styleEl = this.virtualDom.createElement("style");
-      this.virtualDom.mirror.add(styleEl, getDefaultSN(styleEl, this.virtualDom.unserializedId));
+      this.virtualDom.mirror.add(
+        styleEl,
+        getDefaultSN(styleEl, this.virtualDom.unserializedId)
+      );
       documentElement.insertBefore(styleEl, head);
       styleEl.rules.push({
         source: IncrementalSource.StyleSheetRule,
@@ -9104,12 +9937,16 @@ var Replayer = class {
     afterAppend(iframeEl.contentDocument, mutation.node.id);
     for (const { mutationInQueue, builtNode } of collected) {
       this.attachDocumentToIframe(mutationInQueue, builtNode);
-      this.newDocumentQueue = this.newDocumentQueue.filter((m) => m !== mutationInQueue);
+      this.newDocumentQueue = this.newDocumentQueue.filter(
+        (m) => m !== mutationInQueue
+      );
     }
   }
   collectIframeAndAttachDocument(collected, builtNode) {
     if (isSerializedIframe(builtNode, this.mirror)) {
-      const mutationInQueue = this.newDocumentQueue.find((m) => m.parentId === this.mirror.getId(builtNode));
+      const mutationInQueue = this.newDocumentQueue.find(
+        (m) => m.parentId === this.mirror.getId(builtNode)
+      );
       if (mutationInQueue) {
         collected.push({
           mutationInQueue,
@@ -9176,7 +10013,9 @@ var Replayer = class {
       const promises = [];
       for (const event of this.service.state.context.events) {
         if (event.type === EventType.IncrementalSnapshot && event.data.source === IncrementalSource.CanvasMutation) {
-          promises.push(this.deserializeAndPreloadCanvasEvents(event.data, event));
+          promises.push(
+            this.deserializeAndPreloadCanvasEvents(event.data, event)
+          );
           const commands = "commands" in event.data ? event.data.commands : [event.data];
           commands.forEach((c2) => {
             this.preloadImages(c2, event);
@@ -9203,16 +10042,30 @@ var Replayer = class {
           isUnchanged: true
         };
         if ("commands" in data) {
-          const commands = yield Promise.all(data.commands.map((c2) => __awaiter(this, void 0, void 0, function* () {
-            const args = yield Promise.all(c2.args.map(deserializeArg(this.imageMap, null, status)));
-            return Object.assign(Object.assign({}, c2), { args });
-          })));
+          const commands = yield Promise.all(
+            data.commands.map(
+              (c2) => __awaiter(this, void 0, void 0, function* () {
+                const args = yield Promise.all(
+                  c2.args.map(deserializeArg(this.imageMap, null, status))
+                );
+                return Object.assign(Object.assign({}, c2), { args });
+              })
+            )
+          );
           if (status.isUnchanged === false)
-            this.canvasEventMap.set(event, Object.assign(Object.assign({}, data), { commands }));
+            this.canvasEventMap.set(
+              event,
+              Object.assign(Object.assign({}, data), { commands })
+            );
         } else {
-          const args = yield Promise.all(data.args.map(deserializeArg(this.imageMap, null, status)));
+          const args = yield Promise.all(
+            data.args.map(deserializeArg(this.imageMap, null, status))
+          );
           if (status.isUnchanged === false)
-            this.canvasEventMap.set(event, Object.assign(Object.assign({}, data), { args }));
+            this.canvasEventMap.set(
+              event,
+              Object.assign(Object.assign({}, data), { args })
+            );
         }
       }
     });
@@ -9399,7 +10252,9 @@ var Replayer = class {
             mediaEl.playbackRate = d.playbackRate;
           }
         } catch (error) {
-          this.warn(`Failed to replay media interactions: ${error.message || error}`);
+          this.warn(
+            `Failed to replay media interactions: ${error.message || error}`
+          );
         }
         break;
       }
@@ -9445,7 +10300,11 @@ var Replayer = class {
       }
       case IncrementalSource.Font: {
         try {
-          const fontFace = new FontFace(d.family, d.buffer ? new Uint8Array(JSON.parse(d.fontSource)) : d.fontSource, d.descriptors);
+          const fontFace = new FontFace(
+            d.family,
+            d.buffer ? new Uint8Array(JSON.parse(d.fontSource)) : d.fontSource,
+            d.descriptors
+          );
           (_c = this.iframe.contentDocument) === null || _c === void 0 ? void 0 : _c.fonts.add(fontFace);
         } catch (error) {
           this.warn(error);
@@ -9477,7 +10336,11 @@ var Replayer = class {
         for (const key in this.legacy_missingNodeRetryMap) {
           try {
             const value = this.legacy_missingNodeRetryMap[key];
-            const virtualNode = buildFromNode(value.node, this.virtualDom, this.mirror);
+            const virtualNode = buildFromNode(
+              value.node,
+              this.virtualDom,
+              this.mirror
+            );
             if (virtualNode)
               value.node = virtualNode;
           } catch (error) {
@@ -9515,13 +10378,21 @@ var Replayer = class {
             parent.rules = [];
         } catch (error) {
           if (error instanceof DOMException) {
-            this.warn("parent could not remove child in mutation", parent, target, d);
+            this.warn(
+              "parent could not remove child in mutation",
+              parent,
+              target,
+              d
+            );
           } else {
             throw error;
           }
         }
     });
-    const legacy_missingNodeMap = Object.assign({}, this.legacy_missingNodeRetryMap);
+    const legacy_missingNodeMap = Object.assign(
+      {},
+      this.legacy_missingNodeRetryMap
+    );
     const queue = [];
     const nextNotInDOM = (mutation) => {
       let next = null;
@@ -9621,14 +10492,23 @@ var Replayer = class {
         parent.rules = [];
       if (isSerializedIframe(target, this.mirror)) {
         const targetId = this.mirror.getId(target);
-        const mutationInQueue = this.newDocumentQueue.find((m) => m.parentId === targetId);
+        const mutationInQueue = this.newDocumentQueue.find(
+          (m) => m.parentId === targetId
+        );
         if (mutationInQueue) {
           this.attachDocumentToIframe(mutationInQueue, target);
-          this.newDocumentQueue = this.newDocumentQueue.filter((m) => m !== mutationInQueue);
+          this.newDocumentQueue = this.newDocumentQueue.filter(
+            (m) => m !== mutationInQueue
+          );
         }
       }
       if (mutation.previousId || mutation.nextId) {
-        this.legacy_resolveMissingNode(legacy_missingNodeMap, parent, target, mutation);
+        this.legacy_resolveMissingNode(
+          legacy_missingNodeMap,
+          parent,
+          target,
+          mutation
+        );
       }
     };
     d.adds.forEach((mutation) => {
@@ -9639,13 +10519,19 @@ var Replayer = class {
       const resolveTrees = queueToResolveTrees(queue);
       queue.length = 0;
       if (Date.now() - startTime > 500) {
-        this.warn("Timeout in the loop, please check the resolve tree data:", resolveTrees);
+        this.warn(
+          "Timeout in the loop, please check the resolve tree data:",
+          resolveTrees
+        );
         break;
       }
       for (const tree of resolveTrees) {
         const parent = mirror2.getNode(tree.value.parentId);
         if (!parent) {
-          this.debug("Drop resolve tree since there is no parent for the root node.", tree);
+          this.debug(
+            "Drop resolve tree since there is no parent for the root node.",
+            tree
+          );
         } else {
           iterateResolveTree(tree, (mutation) => {
             appendNode(mutation);
@@ -9711,7 +10597,10 @@ var Replayer = class {
               }
               target.setAttribute(attributeName, value);
             } catch (error) {
-              this.warn("An error occurred may due to the checkout feature.", error);
+              this.warn(
+                "An error occurred may due to the checkout feature.",
+                error
+              );
             }
           } else if (attributeName === "style") {
             const styleValues = value;
@@ -9855,7 +10744,11 @@ var Replayer = class {
   applyStyleDeclaration(data, styleSheet) {
     if (data.set) {
       const rule = getNestedRule(styleSheet.rules, data.index);
-      rule.style.setProperty(data.set.property, data.set.value, data.set.priority);
+      rule.style.setProperty(
+        data.set.property,
+        data.set.value,
+        data.set.priority
+      );
     }
     if (data.remove) {
       const rule = getNestedRule(styleSheet.rules, data.index);
@@ -9880,10 +10773,13 @@ var Replayer = class {
       try {
         newStyleSheet = new hostWindow.CSSStyleSheet();
         this.styleMirror.add(newStyleSheet, style.styleId);
-        this.applyStyleSheetRule({
-          source: IncrementalSource.StyleSheetRule,
-          adds: style.rules
-        }, newStyleSheet);
+        this.applyStyleSheetRule(
+          {
+            source: IncrementalSource.StyleSheetRule,
+            adds: style.rules
+          },
+          newStyleSheet
+        );
       } catch (e2) {
       }
     });
@@ -9896,7 +10792,10 @@ var Replayer = class {
       else if (targetHost2.nodeName === "#document")
         targetHost2.adoptedStyleSheets = stylesToAdopt;
       if (stylesToAdopt.length !== styleIds.length && count < MAX_RETRY_TIME) {
-        setTimeout(() => adoptStyleSheets(targetHost2, styleIds), 0 + 100 * count);
+        setTimeout(
+          () => adoptStyleSheets(targetHost2, styleIds),
+          0 + 100 * count
+        );
         count++;
       }
     };
