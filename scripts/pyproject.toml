@@ -12,6 +12,8 @@ boto3 = {version = ">=1.23,<2.0", extras = ["crt"]}
 brotli = ">=1.0,<2.0"
 tqdm = "^4.66.1"
 stripe = "^6.7.0"
+sagemaker = "^2.207.1"
+jupyter = "^1.0.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.9.1"
